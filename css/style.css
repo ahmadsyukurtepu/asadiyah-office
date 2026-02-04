@@ -1,111 +1,118 @@
 /* css/style.css */
-
-/* 1. Pengaturan Font & Dasar */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+:root {
+    --primary-green: #1b5e20;
+    --dark-green: #0d3b11;
+    --accent-yellow: #fbbf24;
+}
 
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: #f3f4f6;
     margin: 0;
-    display: flex;
-    min-height: 100vh;
+    color: #1f2937;
 }
 
-/* 2. Sidebar (Bagian Hijau di Samping) */
+/* Sidebar Styling Persis Index(13) */
 .sidebar-green {
     background: linear-gradient(180deg, #1b5e20 0%, #0d3b11 100%);
     width: 300px;
     height: 100vh;
     position: fixed;
     color: white;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
     z-index: 50;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
 }
 
-/* 3. Menu Navigasi */
+/* Link Menu Navigasi */
 .nav-item {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 1.5rem;
-    margin: 0.5rem 1rem;
-    color: #cbd5e1;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    border-radius: 0.75rem;
-    transition: all 0.3s ease;
+    border-radius: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
-    font-size: 14px;
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
 }
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    transform: translateX(5px);
+    transform: translateX(8px);
 }
 
-/* 4. Indikator Menu Aktif */
+/* State Aktif dengan Border Kuning */
 .active-link {
-    background: rgba(255, 255, 255, 0.15);
-    border-left: 4px solid #fbbf24;
-    color: #fbbf24 !important;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--accent-yellow) !important;
+    border-left: 4px solid var(--accent-yellow);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* 5. Konten Utama */
+/* Main Content Area */
 .main-content {
-    margin-left: 300px; /* Jarak agar tidak tertutup sidebar */
+    margin-left: 300px;
     flex: 1;
-    padding: 2rem;
-    background-color: #f9fafb;
+    padding: 2.5rem;
     min-height: 100vh;
 }
 
-/* 6. Kartu & Komponen UI */
+/* Card Styling (Efek Rounded Besar) */
 .asadiyah-card {
     background: white;
-    padding: 2rem;
     border-radius: 2.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
-/* 7. Pengaturan Tabel */
-table {
-    width: 100%;
-    border-collapse: collapse;
+/* Form Input Styling */
+input, select, textarea {
+    background-color: #f9fafb !important;
+    border: 2px solid transparent !important;
+    border-radius: 1.25rem !important;
+    padding: 1rem 1.25rem !important;
+    transition: all 0.3s ease !important;
 }
 
-th {
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.05em;
-    color: #9ca3af;
-    padding: 1rem;
-    text-align: left;
+input:focus {
+    background-color: white !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
+    outline: none !important;
 }
 
-td {
-    padding: 1rem;
-    border-bottom: 1px solid #f3f4f6;
-    font-size: 13px;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #1b5e20;
+    border-radius: 10px;
 }
 
-/* 8. Animasi Loading */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-.fa-spin {
-    animation: spin 1s linear infinite;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* 9. Responsive (Untuk HP) */
-@media (max-width: 768px) {
-    .sidebar-green {
-        width: 70px;
-        padding: 1rem 0.5rem;
-    }
-    .sidebar-green span, .sidebar-green .nav-item span {
-        display: none; /* Sembunyikan teks di HP */
-    }
-    .main-content {
-        margin-left: 70px;
-    }
+.animate-fade {
+    animation: fadeIn 0.6s ease-out forwards;
 }
