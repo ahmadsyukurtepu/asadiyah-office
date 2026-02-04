@@ -6,44 +6,34 @@
                 Input Agenda Baru
             </div>
             <form id="formAgenda" class="p-6 space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Nama Kegiatan</label>
-                    <input type="text" id="namaKegiatan" placeholder="Contoh: Rapat Pleno" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500 transition-all">
-                </div>
+                <input type="text" id="namaKegiatan" placeholder="Nama Kegiatan" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Tanggal</label>
-                        <input type="date" id="tglAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Waktu</label>
-                        <input type="time" id="jamAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
-                    </div>
+                    <input type="date" id="tglAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none">
+                    <input type="time" id="jamAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none">
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Lokasi / Tempat</label>
-                    <input type="text" id="lokasiAgenda" placeholder="Aula Pusat" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
+                <input type="text" id="lokasiAgenda" placeholder="Lokasi Acara" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none">
+
+                <div class="p-3 bg-orange-50 rounded-2xl border-2 border-dashed border-orange-200">
+                    <input type="file" id="fileAgenda" accept="application/pdf" class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-600 file:text-white file:font-bold">
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Lampiran (PDF)</label>
-                    <div class="p-3 bg-orange-50 rounded-2xl border-2 border-dashed border-orange-200">
-                        <input type="file" id="fileAgenda" accept="application/pdf" class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-600 file:text-white file:font-bold">
-                    </div>
-                </div>
-
-                <button type="button" onclick="simpanAgendaCloud()" id="btnSimpanAgenda" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl uppercase text-sm shadow-lg shadow-orange-100 transition-all active:scale-95">
-                    Simpan Agenda
+                <button type="button" onclick="simpanAgendaKeSpreadsheet()" id="btnSimpanAgenda" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl uppercase text-sm shadow-lg transition-all active:scale-95">
+                    Upload & Simpan Agenda
                 </button>
             </form>
         </div>
 
-        <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+        <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative">
+            <div id="loadingAgenda" class="hidden absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col">
+                <i class="fas fa-spinner fa-spin text-2xl text-orange-600 mb-2"></i>
+                <p class="text-[10px] font-black text-gray-400 uppercase">Sinkronisasi Agenda...</p>
+            </div>
+
             <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
                 <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Jadwal & Disposisi</h3>
-                <button onclick="muatAgenda()" class="text-orange-600 hover:rotate-180 transition-all duration-500">
+                <button onclick="muatAgendaDariSpreadsheet()" class="text-orange-600 hover:rotate-180 transition-all duration-500">
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
@@ -54,59 +44,29 @@
                         <tr class="text-[10px] uppercase font-black text-gray-400 tracking-widest border-b border-gray-50">
                             <th class="px-6 py-5">Waktu & Acara</th>
                             <th class="px-6 py-5">Lokasi</th>
-                            <th class="px-6 py-5">Disposisi Pimpinan</th>
+                            <th class="px-6 py-5">Disposisi</th>
                             <th class="px-6 py-5 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="bodyAgenda" class="text-[11px] font-bold text-gray-600">
-                        <tr class="border-b border-gray-50/50 hover:bg-orange-50/30 transition-all">
-                            <td class="px-6 py-4">
-                                <div class="text-orange-600">12 Feb 2026 • 09:00</div>
-                                <div class="text-gray-800 font-black uppercase">Rapat Kerja Tahunan</div>
-                            </td>
-                            <td class="px-6 py-4 text-gray-400 italic">Aula Masjid Jami'</td>
-                            <td class="px-6 py-4">
-                                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px]">Harap Dihadiri Sekretaris</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center gap-2">
-                                    <button onclick="bukaModalDisposisi('ID_01')" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white" title="Disposisi"><i class="fas fa-pen-nib text-[10px]"></i></button>
-                                    <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-800 hover:text-white" title="Lihat PDF"><i class="fas fa-file-pdf text-[10px]"></i></button>
-                                    <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white" title="WA Pimpinan"><i class="fab fa-whatsapp text-[10px]"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<div id="modalDisposisi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-    <div class="bg-white rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl animate-pop">
-        <div class="bg-[#1e293b] p-6 text-white text-center">
-            <i class="fas fa-pen-nib text-3xl mb-3 text-blue-400"></i>
-            <h3 class="font-black uppercase tracking-widest">Form Disposisi</h3>
-            <p class="text-[10px] text-gray-400">Tambahkan Instruksi Pimpinan</p>
-        </div>
-        <div class="p-8 space-y-4">
-            <input type="hidden" id="targetIdAgenda">
-            <textarea id="inputDisposisi" rows="4" placeholder="Tulis instruksi/disposisi di sini..." class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-3xl text-xs font-bold outline-none focus:border-blue-500"></textarea>
-            <div class="flex gap-3">
-                <button onclick="tutupDisposisi()" class="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase bg-gray-100 text-gray-400 hover:bg-gray-200">Batal</button>
-                <button onclick="updateDisposisi()" class="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase bg-blue-600 text-white shadow-lg shadow-blue-200">Simpan Catatan</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    // Fungsi Sinkronisasi Data dari Config
-    async function muatAgenda() {
+    // 1. FUNGSI AMBIL DATA (GET)
+    async function muatAgendaDariSpreadsheet() {
+        const overlay = document.getElementById('loadingAgenda');
+        overlay.classList.remove('hidden');
+
         try {
-            const resp = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaAgenda&targetID=${CONFIG.DB.AGENDA}`);
-            const data = await resp.json();
+            // Mengambil ID Agenda dari CONFIG
+            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaAgenda&targetID=${CONFIG.DB.AGENDA}`);
+            const data = await response.json();
+            
             let html = '';
             data.forEach(row => {
                 html += `
@@ -130,53 +90,59 @@
                     </td>
                 </tr>`;
             });
-            document.getElementById('bodyAgenda').innerHTML = html || '<tr><td colspan="4" class="py-10 text-center">Belum ada agenda.</td></tr>';
-        } catch (e) { console.error("Gagal muat agenda"); }
+            document.getElementById('bodyAgenda').innerHTML = html || '<tr><td colspan="4" class="py-10 text-center">Data Agenda Kosong</td></tr>';
+        } catch (e) {
+            console.error("Gagal sinkronisasi agenda");
+        } finally {
+            overlay.classList.add('hidden');
+        }
     }
 
-    // Fungsi Simpan Agenda dengan File
-    async function simpanAgendaCloud() {
+    // 2. FUNGSI SIMPAN DATA (POST)
+    async function simpanAgendaKeSpreadsheet() {
         const btn = document.getElementById('btnSimpanAgenda');
         const file = document.getElementById('fileAgenda').files[0];
-        if (!file) { alert("Wajib lampirkan PDF Undangan!"); return; }
+        
+        if (!file || !document.getElementById('namaKegiatan').value) {
+            alert("Mohon lengkapi Nama Kegiatan dan Lampiran PDF!");
+            return;
+        }
 
         btn.disabled = true;
-        btn.innerHTML = "MENGUPLOAD...";
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> MENGUPLOAD...';
 
         const reader = new FileReader();
         reader.onload = async function(e) {
             const payload = {
                 action: "simpanAgenda",
-                targetID: CONFIG.DB.AGENDA,
+                targetID: CONFIG.DB.AGENDA, // Mengirim ke ID khusus Agenda
                 tgl: document.getElementById('tglAgenda').value,
                 jam: document.getElementById('jamAgenda').value,
                 kegiatan: document.getElementById('namaKegiatan').value,
                 lokasi: document.getElementById('lokasiAgenda').value,
                 base64: e.target.result.split(',')[1],
-                fileName: file.name
+                fileName: `AGENDA_${Date.now()}_${file.name}`
             };
-            const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            const res = await response.json();
-            alert(res.message);
-            muatAgenda();
-            btn.innerHTML = "Simpan Agenda";
-            btn.disabled = false;
+
+            try {
+                const response = await fetch(CONFIG.SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
+                const res = await response.json();
+                alert(res.message);
+                muatAgendaDariSpreadsheet(); // Refresh tabel setelah simpan
+                document.getElementById('formAgenda').reset();
+            } catch (err) {
+                alert("Gagal terhubung ke Cloud!");
+            } finally {
+                btn.innerHTML = "Upload & Simpan Agenda";
+                btn.disabled = false;
+            }
         };
         reader.readAsDataURL(file);
     }
 
-    // Fungsi Modal Disposisi
-    function bukaModalDisposisi(id) {
-        document.getElementById('targetIdAgenda').value = id;
-        document.getElementById('modalDisposisi').classList.replace('hidden', 'flex');
-    }
-    function tutupDisposisi() { document.getElementById('modalDisposisi').classList.replace('flex', 'hidden'); }
-
-    // Fungsi Kirim WA
-    function kirimWA(acara, tgl, lok) {
-        const pesan = encodeURIComponent(`*AGENDA AS'ADIYAH*\nKegiatan: ${acara}\nWaktu: ${tgl}\nLokasi: ${lok}\n\nMohon kehadirannya.`);
-        window.open(`https://wa.me/?text=${pesan}`, '_blank');
-    }
-
-    muatAgenda();
+    // Jalankan saat pertama kali dibuka
+    muatAgendaDariSpreadsheet();
 </script>
