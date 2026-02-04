@@ -1,65 +1,44 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - AS'ADIYAH OFFICE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="flex bg-gray-50">
-    <aside class="sidebar-green flex flex-col text-white p-6 fixed h-full w-[300px]">
-        <div class="flex items-center gap-4 px-2 mb-10">
-            <div class="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center shadow-lg text-emerald-900">
-                <i class="fas fa-mosque"></i>
-            </div>
-            <span class="font-bold text-xl tracking-tighter uppercase">As'adiyah Office</span>
-        </div>
-        <nav class="flex-1 space-y-2">
-            <a href="index.html" class="nav-item active-link"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
-            <a href="persuratan.html" class="nav-item"><i class="fas fa-envelope-open-text"></i> <span>Persuratan</span></a>
-            <a href="santri.html" class="nav-item"><i class="fas fa-user-graduate"></i> <span>Data Santri</span></a>
-            <a href="pegawai.html" class="nav-item"><i class="fas fa-users-gear"></i> <span>Data Pegawai</span></a>
-            <a href="regulasi.html" class="nav-item"><i class="fas fa-file-shield"></i> <span>Regulasi</span></a>
-            <a href="agenda.html" class="nav-item"><i class="fas fa-calendar-day"></i> <span>Agenda</span></a>
-        </nav>
-    </aside>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjUbCunq2XkoilsNLBUHmLJV89UpEacemw7OoS8fRQB7oFg0YZ8RS3okOEqADdXmE0/exec'; // Ganti dengan URL hasil Deploy
 
-    <main class="ml-[300px] flex-1 p-8 min-h-screen">
-        <header class="flex justify-between items-center mb-10">
-            <div>
-                <h1 class="text-2xl font-black text-gray-800 uppercase tracking-tight">Dashboard Utama</h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <div id="statusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span id="statusMsg" class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Sistem Online</span>
-                </div>
-            </div>
-            <div class="text-right">
-                <p id="jamDigital" class="text-lg font-black text-gray-800 leading-none">00:00:00</p>
-                <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Kamis, 5 Februari 2026</p>
-            </div>
-        </header>
+async function handleAuth(e) {
+    e.preventDefault();
+    const role = document.getElementById('loginRole').value;
+    const id = document.getElementById('loginID').value;
+    const pin = document.getElementById('loginPIN').value;
+    const btn = document.getElementById('btnLogin');
 
-        <div class="bg-emerald-800 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden mb-10">
-            <div class="relative z-10">
-                <h2 class="text-4xl font-black mb-2">Selamat Datang, Officer!</h2>
-                <p class="text-emerald-100 opacity-80 max-w-md">Pusat koordinasi digital administrasi As'adiyah.</p>
-            </div>
-            <i class="fas fa-mosque absolute -right-10 -bottom-10 text-[200px] opacity-10 rotate-12"></i>
-        </div>
+    btn.innerHTML = "VERIFIKASI...";
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <div class="asadiyah-card group hover:bg-emerald-700 transition-all cursor-pointer">
-                <p class="text-[10px] font-bold text-gray-400 group-hover:text-emerald-200 uppercase">Total Santri</p>
-                <h3 id="statSantri" class="text-3xl font-black text-emerald-800 group-hover:text-white mt-2">0</h3>
-            </div>
-            </div>
-    </main>
-    <script src="js/config.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        setInterval(() => { document.getElementById('jamDigital').innerText = new Date().toLocaleTimeString('id-ID'); }, 1000);
-    </script>
-</body>
-</html>
+    // Mengirim data ke Google menggunakan FETCH
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: "login",
+                id: id,
+                pin: pin,
+                role: role
+            })
+        });
+        const res = await response.json();
+
+        if (res.status === "OK") {
+            userRole = role;
+            document.getElementById('loginOverlay').style.display = 'none';
+            // Tampilkan dashboard atau form operator
+            if (role === 'OFFICER') {
+                document.getElementById('sidebar').classList.remove('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('adminName').innerText = "OFFICER: " + res.nama;
+            } else {
+                tampilkanFormOperator(role, res.nama);
+            }
+        } else {
+            alert("Akses Ditolak! ID atau PIN salah.");
+            btn.innerHTML = "Verifikasi Akses";
+        }
+    } catch (err) {
+        alert("Gagal terhubung ke server: " + err);
+        btn.innerHTML = "Verifikasi Akses";
+    }
+}
