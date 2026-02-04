@@ -12,9 +12,23 @@
                         <option value="" disabled selected>-- PILIH JENIS SURAT --</option>
                         <option value="Undangan">Undangan</option>
                         <option value="Surat Tugas">Surat Tugas</option>
+                        <option value="Surat Edaran">Surat Edaran</option>
                         <option value="Surat Keputusan">Surat Keputusan</option>
+                        <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
+                        <option value="Surat Izin">Surat Izin</option>
+                        <option value="Surat Cuti">Surat Cuti</option>
+                        <option value="Surat Keterangan">Surat Keterangan</option>
+                        <option value="Surat Kuasa">Surat Kuasa</option>
+                        <option value="Surat Pemberhentian">Surat Pemberhentian</option>
+                        <option value="Surat Persetujuan">Surat Persetujuan</option>
+                        <option value="Surat Perintah/Intruksi">Surat Perintah/Intruksi</option>
+                        <option value="Surat Perjanjian">Surat Perjanjian</option>
+                        <option value="Surat Permohonan">Surat Permohonan</option>
+                        <option value="Surat Pernyataan">Surat Pernyataan</option>
+                        <option value="Surat Rekomendasi">Surat Rekomendasi</option>
+                        <option value="Surat Teguran">Surat Teguran</option>
                         <option value="Surat Masuk">Surat Masuk</option>
-                        </select>
+                    </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -30,7 +44,7 @@
                         class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold">
                 </div>
 
-                <button type="button" onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg transition-all active:scale-95">
+                <button type="button" onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg shadow-yellow-100 transition-all active:scale-95">
                     Upload & Simpan
                 </button>
             </form>
@@ -46,13 +60,11 @@
     </div>
 
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-8 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="p-8 border-b border-gray-50 flex justify-between items-center">
             <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Riwayat Pengarsipan</h3>
-            <div class="relative w-full md:w-64">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-xs"></i>
-                <input type="text" id="searchSurat" onkeyup="cariSurat()" placeholder="Cari..." 
-                    class="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-full text-[11px] font-bold outline-none focus:ring-2 focus:ring-green-100 transition-all">
-            </div>
+            <button onclick="muatDataSurat()" class="text-green-700 hover:rotate-180 transition-all duration-500">
+                <i class="fas fa-sync-alt"></i>
+            </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -66,20 +78,8 @@
                         <th class="px-8 py-5 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="riwayatTable" class="text-[11px] font-bold text-gray-600">
-                    <tr class="border-b border-gray-50/50 hover:bg-gray-50/50 transition-all">
-                        <td class="px-8 py-6 text-gray-400">2/2/2026, 20.21.19</td>
-                        <td class="px-6 py-6">Surat Tugas</td>
-                        <td class="px-6 py-6 text-green-700 font-black">3435</td>
-                        <td class="px-6 py-6 text-gray-400">2026-02-07</td>
-                        <td class="px-8 py-6">
-                            <div class="flex justify-center gap-3">
-                                <button class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fas fa-eye text-[10px]"></i></button>
-                                <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all"><i class="fab fa-whatsapp text-[10px]"></i></button>
-                                <button class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all"><i class="fas fa-trash text-[10px]"></i></button>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="riwayatSuratBody" class="text-[11px] font-bold text-gray-600">
+                    <tr><td colspan="5" class="py-10 text-center text-gray-300">Memuat database...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -87,12 +87,8 @@
 </div>
 
 <script>
-    // Fungsi sinkronisasi tampilan
-    function updateJenisDisplay(val) {
-        document.getElementById('displayJenis').innerText = val.toUpperCase();
-    }
+    function updateJenisDisplay(val) { document.getElementById('displayJenis').innerText = val.toUpperCase(); }
 
-    // Fungsi Preview
     function previewPDF(input) {
         const frame = document.getElementById('pdfFrame');
         const placeholder = document.getElementById('pdfPlaceholder');
@@ -107,12 +103,66 @@
         }
     }
 
-    // Search logic sederhana
-    function cariSurat() {
-        let input = document.getElementById("searchSurat").value.toLowerCase();
-        let rows = document.getElementById("riwayatTable").getElementsByTagName("tr");
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].style.display = rows[i].innerText.toLowerCase().includes(input) ? "" : "none";
-        }
+    async function muatDataSurat() {
+        try {
+            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaSurat&targetID=${CONFIG.DB.SURAT}`);
+            const data = await response.json();
+            let html = '';
+            data.forEach(row => {
+                html += `
+                    <tr class="border-b border-gray-50/50 hover:bg-gray-50/50 transition-all">
+                        <td class="px-8 py-6 text-gray-400">${row.waktu}</td>
+                        <td class="px-6 py-6">${row.jenis}</td>
+                        <td class="px-6 py-6 text-green-700 font-black">${row.nomor}</td>
+                        <td class="px-6 py-6 text-gray-400">${row.tujuan}</td>
+                        <td class="px-8 py-6">
+                            <div class="flex justify-center gap-2">
+                                <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fas fa-eye text-[10px]"></i></a>
+                                <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all"><i class="fab fa-whatsapp text-[10px]"></i></button>
+                                <button class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all"><i class="fas fa-trash text-[10px]"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+            document.getElementById('riwayatSuratBody').innerHTML = html || '<tr><td colspan="5" class="text-center py-10">Belum ada data.</td></tr>';
+        } catch (e) { console.error("Error muat data"); }
     }
+
+    async function simpanSuratCloud() {
+        const btn = document.getElementById('btnSimpanSurat');
+        const file = document.getElementById('fileSurat').files[0];
+        if (!file) { alert("Pilih file PDF!"); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MENGUPLOAD...';
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const payload = {
+                action: "simpanSurat",
+                targetID: CONFIG.DB.SURAT,
+                noSurat: document.getElementById('noSurat').value,
+                jenis: document.getElementById('jenisSurat').value,
+                tgl: document.getElementById('tglSurat').value,
+                tujuan: document.getElementById('tujuanSurat').value,
+                perihal: document.getElementById('perihalSurat').value,
+                base64: e.target.result.split(',')[1],
+                fileName: file.name
+            };
+
+            try {
+                const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const res = await response.json();
+                alert(res.message);
+                muatDataSurat();
+            } catch (err) { alert("Gagal koneksi server"); }
+            finally {
+                btn.innerHTML = "Upload & Simpan";
+                btn.disabled = false;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    muatDataSurat();
 </script>
