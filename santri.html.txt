@@ -1,0 +1,25 @@
+<main class="ml-[300px] flex-1 p-8">
+    <h1 class="text-2xl font-black text-gray-800 uppercase mb-8">Data Santri</h1>
+    
+    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm overflow-hidden">
+        <div class="flex gap-4 mb-6">
+            <select id="filterKategoriSantri" onchange="loadDataSantri()" class="p-3 bg-gray-50 rounded-xl border-none outline-none text-xs font-bold">
+                <option value="pusat">PUSAT</option>
+                <option value="cabang">CABANG</option>
+            </select>
+        </div>
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 text-[10px] font-bold text-gray-400 uppercase">
+                <tr>
+                    <th class="p-4">Tahun</th>
+                    <th class="p-4">Satuan Pendidikan</th>
+                    <th class="p-4">Putra</th>
+                    <th class="p-4">Putri</th>
+                    <th class="p-4 text-center">Total</th>
+                </tr>
+            </thead>
+            <tbody id="bodyTabelSantri">
+                </tbody>
+        </table>
+    </div>
+</main>

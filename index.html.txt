@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - AS'ADIYAH OFFICE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex">
+    <aside class="sidebar-green flex flex-col text-white p-6 fixed h-full w-[300px]">
+        <div class="p-4 font-black text-xl mb-10">AS'ADIYAH OFFICE</div>
+        <nav class="flex-1 space-y-2">
+            <a href="index.html" class="nav-item active-link"><i class="fas fa-grid-2 w-6"></i> Dashboard</a>
+            <a href="persuratan.html" class="nav-item"><i class="fas fa-envelope-open-text w-6"></i> Persuratan</a>
+            <a href="santri.html" class="nav-item"><i class="fas fa-user-graduate w-6"></i> Data Santri</a>
+            <a href="regulasi.html" class="nav-item"><i class="fas fa-file-shield w-6"></i> Regulasi</a>
+        </nav>
+    </aside>
+
+    <main class="ml-[300px] flex-1 p-8">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 id="pageTitle" class="text-2xl font-black text-gray-800 uppercase">Dashboard</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <div id="statusDot" class="w-2 h-2 rounded-full bg-gray-400"></div>
+                    <span id="statusMsg" class="text-[10px] font-bold text-gray-400 uppercase">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="bg-emerald-800 p-10 rounded-[2.5rem] text-white shadow-xl mb-8">
+            <h2 class="text-3xl font-bold">Selamat Datang, Officer!</h2>
+            <p class="opacity-70 mt-2 text-sm">Sistem terintegrasi As'adiyah Pusat & Cabang</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm">
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Total Santri</p>
+                <p class="text-2xl font-black text-emerald-700" id="statSantri">0</p>
+            </div>
+            </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
