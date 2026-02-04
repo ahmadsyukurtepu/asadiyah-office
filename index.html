@@ -141,15 +141,15 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAaWlw3mlmhx_7WXu9JcahYTZmAH7-B2PPNI3JKLLjzfad8Z4eWFXoopAcD0IStT1T2g/exec'; 
 
         async function handleLogin() {
-            const btn = document.getElementById('btnLogin');
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-3"></i>MENGONTROL AKSES...';
-            
-            const payload = {
-                action: "login",
-                role: document.getElementById('loginRole').value,
-                id: document.getElementById('loginID').value,
-                pin: document.getElementById('loginPIN').value
-            };
+    // ... kode ambil value input ...
+    const payload = {
+        action: "login",
+        targetID: CONFIG.DB.LOGIN, // Menggunakan ID dari config.js
+        role: document.getElementById('loginRole').value,
+        id: document.getElementById('loginID').value,
+        pin: document.getElementById('loginPIN').value
+    };
+    
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
@@ -194,4 +194,5 @@
     </script>
 </body>
 </html>
+
 
