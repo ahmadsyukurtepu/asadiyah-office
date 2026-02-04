@@ -1,6 +1,6 @@
 // Konfigurasi Database hasil bedah file index(13)
 const CONFIG = {
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbw-qTM5kYatADGwLdnUQ_YqiZQBk7bwJU_5I8KPqO1x-lDjq00Mk4LLOOB02tw-Q1hGuA/exec',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbywFZkPsNg0d53Lft2KVeYF89Z3yZSYsn9mtK0_qb_aBG8Bwn3MhRSa9YwVnjnQCaXbFg/exec',
     DB: {
         LOGIN: '1HTdBcYKE1ztWtj1u_6rtC0xAmE-Mknl_4mEG6og1xPg',
         SURAT: '1BrvgSrI_4PdTZx95jbGY_H21bSHZpl0fduNEfPRZlr0',
