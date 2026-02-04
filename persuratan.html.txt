@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persuratan - AS'ADIYAH OFFICE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex min-h-screen">
+    <aside class="sidebar-green flex flex-col text-white p-6 fixed h-full w-[300px]">
+        <div class="flex items-center gap-4 px-2 mb-10">
+            <span class="font-black text-xl">AS'ADIYAH</span>
+        </div>
+        <nav class="flex-1 space-y-2">
+            <a href="index.html" class="nav-item flex items-center gap-4 p-4"><i class="fas fa-grid-2"></i> Dashboard</a>
+            <a href="persuratan.html" class="nav-item active-link flex items-center gap-4 p-4"><i class="fas fa-envelope-open-text"></i> Persuratan</a>
+            <a href="santri.html" class="nav-item flex items-center gap-4 p-4"><i class="fas fa-user-graduate"></i> Data Santri</a>
+        </nav>
+    </aside>
+
+    <main class="ml-[300px] flex-1 p-8 bg-gray-50">
+        <h1 class="text-2xl font-black mb-6 uppercase">Manajemen Persuratan</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm">
+                <button onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold mt-4">SIMPAN KE CLOUD</button>
+            </div>
+            <div class="bg-white rounded-[2.5rem] shadow-sm overflow-hidden h-[500px]">
+                <iframe id="pdfFrame" class="w-full h-full hidden"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
