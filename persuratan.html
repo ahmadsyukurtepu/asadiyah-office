@@ -3,70 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nama Halaman - AS'ADIYAH OFFICE</title>
-    
+    <title>Persuratan - AS'ADIYAH OFFICE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/style.css">
-
-    <link rel="icon" type="image/png" href="https://asadiyahpusat.org/wp-content/uploads/2023/04/logo-asadiyah.png">
 </head>
-<body class="flex">
+<body class="flex bg-gray-50">
     <aside class="sidebar-green flex flex-col text-white p-6 fixed h-full w-[300px]">
-        <div class="p-4 font-black text-xl mb-10">AS'ADIYAH OFFICE</div>
+        <div class="flex items-center gap-4 px-2 mb-10">
+            <div class="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center shadow-lg text-emerald-900"><i class="fas fa-mosque"></i></div>
+            <span class="font-bold text-xl tracking-tighter uppercase">As'adiyah Office</span>
+        </div>
         <nav class="flex-1 space-y-2">
-            <a href="index.html" class="nav-item"><i class="fas fa-grid-2 w-6"></i> Dashboard</a>
-            <a href="persuratan.html" class="nav-item active-link"><i class="fas fa-envelope-open-text w-6"></i> Persuratan</a>
-            <a href="santri.html" class="nav-item"><i class="fas fa-user-graduate w-6"></i> Data Santri</a>
+            <a href="index.html" class="nav-item"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+            <a href="persuratan.html" class="nav-item active-link"><i class="fas fa-envelope-open-text"></i> <span>Persuratan</span></a>
+            <a href="santri.html" class="nav-item"><i class="fas fa-user-graduate"></i> <span>Data Santri</span></a>
         </nav>
     </aside>
 
-    <main class="ml-[300px] flex-1 p-8">
+    <main class="ml-[300px] flex-1 p-8 min-h-screen">
         <h1 class="text-2xl font-black text-gray-800 uppercase mb-8">Manajemen Persuratan</h1>
         
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm space-y-4">
-                <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Arsip Baru</h3>
-                <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-none">
-                    <option value="SURAT KEPUTUSAN">SURAT KEPUTUSAN</option>
-                    <option value="SURAT KETERANGAN">SURAT KETERANGAN</option>
-                    <option value="SURAT TUGAS">SURAT TUGAS</option>
-                </select>
-                <input type="text" id="noSurat" placeholder="Nomor Surat" class="w-full p-4 bg-gray-50 rounded-2xl outline-none">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            <div class="asadiyah-card space-y-4">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Arsip Baru</h3>
+                <input type="text" id="noSurat" placeholder="Nomor Surat" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-none">
+                <input type="text" id="tujuanSurat" placeholder="Tujuan / Kepada" class="w-full p-4 bg-gray-50 rounded-2xl outline-none border-none">
                 <input type="file" id="fileSurat" onchange="previewPDF(this)" class="w-full text-xs">
-                <button onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold">UPLOAD & SIMPAN</button>
+                <button onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition-all">SIMPAN DATA</button>
             </div>
 
-            <div class="bg-white rounded-[2.5rem] shadow-sm overflow-hidden h-[500px] flex items-center justify-center border-2 border-dashed border-gray-100">
+            <div class="asadiyah-card overflow-hidden h-[450px] flex items-center justify-center border-2 border-dashed border-gray-100">
                 <iframe id="pdfFrame" class="w-full h-full hidden"></iframe>
-                <p id="pdfPlaceholder" class="text-gray-300 font-bold uppercase text-[10px]">Preview Area</p>
+                <div id="pdfPlaceholder" class="text-center text-gray-300">
+                    <i class="fas fa-file-pdf text-4xl mb-2"></i>
+                    <p class="text-[10px] font-bold uppercase">Preview Dokumen</p>
+                </div>
             </div>
-        </div>
-
-        <div class="mt-10 bg-white rounded-[2.5rem] shadow-sm overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-50 text-[10px] font-bold text-gray-400 uppercase">
-                    <tr>
-                        <th class="p-4 text-left">Nomor</th>
-                        <th class="p-4 text-left">Jenis</th>
-                        <th class="p-4 text-left">Tujuan</th>
-                        <th class="p-4 text-left">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="riwayatTable">
-                    </tbody>
-            </table>
         </div>
     </main>
-
     <script src="js/config.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
-
