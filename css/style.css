@@ -1,0 +1,111 @@
+/* css/style.css */
+
+/* 1. Pengaturan Font & Dasar */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 2. Sidebar (Bagian Hijau di Samping) */
+.sidebar-green {
+    background: linear-gradient(180deg, #1b5e20 0%, #0d3b11 100%);
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    color: white;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    z-index: 50;
+}
+
+/* 3. Menu Navigasi */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    margin: 0.5rem 1rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* 4. Indikator Menu Aktif */
+.active-link {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 4px solid #fbbf24;
+    color: #fbbf24 !important;
+}
+
+/* 5. Konten Utama */
+.main-content {
+    margin-left: 300px; /* Jarak agar tidak tertutup sidebar */
+    flex: 1;
+    padding: 2rem;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+/* 6. Kartu & Komponen UI */
+.asadiyah-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 2.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* 7. Pengaturan Tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    padding: 1rem;
+    text-align: left;
+}
+
+td {
+    padding: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 13px;
+}
+
+/* 8. Animasi Loading */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* 9. Responsive (Untuk HP) */
+@media (max-width: 768px) {
+    .sidebar-green {
+        width: 70px;
+        padding: 1rem 0.5rem;
+    }
+    .sidebar-green span, .sidebar-green .nav-item span {
+        display: none; /* Sembunyikan teks di HP */
+    }
+    .main-content {
+        margin-left: 70px;
+    }
+}
