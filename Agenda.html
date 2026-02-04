@@ -1,65 +1,182 @@
-<div class="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100 animate-fade-in">
-    <div class="flex justify-between items-center mb-8">
-        <div>
-            <h2 class="text-3xl font-black text-gray-800 uppercase tracking-tight text-orange-600">Agenda Pimpinan</h2>
-            <p class="text-gray-400 font-bold text-[10px] uppercase tracking-widest">Sinkronisasi: CONFIG.DB.AGENDA</p>
-        </div>
-        <button onclick="document.getElementById('modalAgenda').classList.remove('hidden')" class="bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:scale-105 transition-all">
-            <i class="fas fa-calendar-plus mr-2"></i> Tambah Agenda
-        </button>
-    </div>
-
-    <div id="listAgenda" class="space-y-4">
-        <div class="p-6 bg-gray-50 rounded-[30px] border border-gray-100 flex items-center justify-between">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 bg-white rounded-2xl flex flex-col items-center justify-center shadow-sm border border-orange-100">
-                    <span class="text-[10px] font-black text-gray-400 uppercase">Feb</span>
-                    <span class="text-xl font-black text-orange-600 leading-none">10</span>
-                </div>
-                <div>
-                    <h4 class="font-black text-gray-800 uppercase">Rapat Pleno Pengurus</h4>
-                    <p class="text-xs text-gray-400 font-bold"><i class="fas fa-map-marker-alt mr-1"></i> Aula Kampus IV</p>
-                </div>
+<div class="animate-fade-in space-y-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-1 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-orange-600 text-white py-4 font-bold text-center uppercase text-[11px] tracking-widest">
+                Input Agenda Baru
             </div>
-            <span class="px-4 py-2 bg-orange-100 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-widest text-center">Mendatang</span>
+            <form id="formAgenda" class="p-6 space-y-4">
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Nama Kegiatan</label>
+                    <input type="text" id="namaKegiatan" placeholder="Contoh: Rapat Pleno" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500 transition-all">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Tanggal</label>
+                        <input type="date" id="tglAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Waktu</label>
+                        <input type="time" id="jamAgenda" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Lokasi / Tempat</label>
+                    <input type="text" id="lokasiAgenda" placeholder="Aula Pusat" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-orange-500">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Lampiran (PDF)</label>
+                    <div class="p-3 bg-orange-50 rounded-2xl border-2 border-dashed border-orange-200">
+                        <input type="file" id="fileAgenda" accept="application/pdf" class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-600 file:text-white file:font-bold">
+                    </div>
+                </div>
+
+                <button type="button" onclick="simpanAgendaCloud()" id="btnSimpanAgenda" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl uppercase text-sm shadow-lg shadow-orange-100 transition-all active:scale-95">
+                    Simpan Agenda
+                </button>
+            </form>
+        </div>
+
+        <div class="lg:col-span-2 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Jadwal & Disposisi</h3>
+                <button onclick="muatAgenda()" class="text-orange-600 hover:rotate-180 transition-all duration-500">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-[10px] uppercase font-black text-gray-400 tracking-widest border-b border-gray-50">
+                            <th class="px-6 py-5">Waktu & Acara</th>
+                            <th class="px-6 py-5">Lokasi</th>
+                            <th class="px-6 py-5">Disposisi Pimpinan</th>
+                            <th class="px-6 py-5 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyAgenda" class="text-[11px] font-bold text-gray-600">
+                        <tr class="border-b border-gray-50/50 hover:bg-orange-50/30 transition-all">
+                            <td class="px-6 py-4">
+                                <div class="text-orange-600">12 Feb 2026 • 09:00</div>
+                                <div class="text-gray-800 font-black uppercase">Rapat Kerja Tahunan</div>
+                            </td>
+                            <td class="px-6 py-4 text-gray-400 italic">Aula Masjid Jami'</td>
+                            <td class="px-6 py-4">
+                                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-[10px]">Harap Dihadiri Sekretaris</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="bukaModalDisposisi('ID_01')" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white" title="Disposisi"><i class="fas fa-pen-nib text-[10px]"></i></button>
+                                    <button class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-800 hover:text-white" title="Lihat PDF"><i class="fas fa-file-pdf text-[10px]"></i></button>
+                                    <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white" title="WA Pimpinan"><i class="fab fa-whatsapp text-[10px]"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-<div id="modalAgenda" class="fixed inset-0 z-[50] flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
-    <div class="bg-white w-full max-w-lg rounded-[40px] overflow-hidden shadow-2xl mx-4">
+<div id="modalDisposisi" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-[3rem] w-full max-w-md overflow-hidden shadow-2xl animate-pop">
+        <div class="bg-[#1e293b] p-6 text-white text-center">
+            <i class="fas fa-pen-nib text-3xl mb-3 text-blue-400"></i>
+            <h3 class="font-black uppercase tracking-widest">Form Disposisi</h3>
+            <p class="text-[10px] text-gray-400">Tambahkan Instruksi Pimpinan</p>
+        </div>
         <div class="p-8 space-y-4">
-            <h3 class="text-xl font-black text-gray-800 uppercase">Input Agenda Baru</h3>
-            <input type="date" id="tglAgenda" class="w-full p-4 bg-gray-50 rounded-2xl outline-none font-bold">
-            <input type="text" id="kegiatan" placeholder="Nama Kegiatan" class="w-full p-4 bg-gray-50 rounded-2xl outline-none font-bold">
-            <input type="text" id="lokasi" placeholder="Lokasi Acara" class="w-full p-4 bg-gray-50 rounded-2xl outline-none font-bold">
-            <div class="flex gap-4">
-                <button onclick="document.getElementById('modalAgenda').classList.add('hidden')" class="flex-1 py-4 font-bold text-gray-400">Batal</button>
-                <button onclick="simpanAgenda()" id="btnSaveAgenda" class="flex-1 bg-orange-500 text-white py-4 rounded-2xl font-black shadow-lg">SIMPAN</button>
+            <input type="hidden" id="targetIdAgenda">
+            <textarea id="inputDisposisi" rows="4" placeholder="Tulis instruksi/disposisi di sini..." class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-3xl text-xs font-bold outline-none focus:border-blue-500"></textarea>
+            <div class="flex gap-3">
+                <button onclick="tutupDisposisi()" class="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase bg-gray-100 text-gray-400 hover:bg-gray-200">Batal</button>
+                <button onclick="updateDisposisi()" class="flex-1 py-4 rounded-2xl font-black text-[10px] uppercase bg-blue-600 text-white shadow-lg shadow-blue-200">Simpan Catatan</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    async function simpanAgenda() {
-        const btn = document.getElementById('btnSaveAgenda');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-        const payload = {
-            action: "simpanAgenda",
-            targetID: CONFIG.DB.AGENDA,
-            tgl: document.getElementById('tglAgenda').value,
-            kegiatan: document.getElementById('kegiatan').value,
-            lokasi: document.getElementById('lokasi').value
-        };
-
+    // Fungsi Sinkronisasi Data dari Config
+    async function muatAgenda() {
         try {
+            const resp = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaAgenda&targetID=${CONFIG.DB.AGENDA}`);
+            const data = await resp.json();
+            let html = '';
+            data.forEach(row => {
+                html += `
+                <tr class="border-b border-gray-50/50 hover:bg-orange-50/30 transition-all">
+                    <td class="px-6 py-4">
+                        <div class="text-orange-600">${row.tgl} • ${row.jam}</div>
+                        <div class="text-gray-800 font-black uppercase">${row.kegiatan}</div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-400 italic">${row.lokasi}</td>
+                    <td class="px-6 py-4">
+                        <span class="${row.disposisi ? 'bg-blue-50 text-blue-600' : 'text-gray-300'} px-3 py-1 rounded-lg text-[10px]">
+                            ${row.disposisi || 'Belum ada disposisi'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex justify-center gap-2">
+                            <button onclick="bukaModalDisposisi('${row.id}')" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white"><i class="fas fa-pen-nib"></i></button>
+                            <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-800 hover:text-white"><i class="fas fa-file-pdf"></i></a>
+                            <button onclick="kirimWA('${row.kegiatan}', '${row.tgl}', '${row.lokasi}')" class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white"><i class="fab fa-whatsapp"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('bodyAgenda').innerHTML = html || '<tr><td colspan="4" class="py-10 text-center">Belum ada agenda.</td></tr>';
+        } catch (e) { console.error("Gagal muat agenda"); }
+    }
+
+    // Fungsi Simpan Agenda dengan File
+    async function simpanAgendaCloud() {
+        const btn = document.getElementById('btnSimpanAgenda');
+        const file = document.getElementById('fileAgenda').files[0];
+        if (!file) { alert("Wajib lampirkan PDF Undangan!"); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = "MENGUPLOAD...";
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const payload = {
+                action: "simpanAgenda",
+                targetID: CONFIG.DB.AGENDA,
+                tgl: document.getElementById('tglAgenda').value,
+                jam: document.getElementById('jamAgenda').value,
+                kegiatan: document.getElementById('namaKegiatan').value,
+                lokasi: document.getElementById('lokasiAgenda').value,
+                base64: e.target.result.split(',')[1],
+                fileName: file.name
+            };
             const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
             const res = await response.json();
             alert(res.message);
-            document.getElementById('modalAgenda').classList.add('hidden');
-        } catch (e) { alert("Gagal Simpan"); }
-        btn.innerHTML = 'SIMPAN';
+            muatAgenda();
+            btn.innerHTML = "Simpan Agenda";
+            btn.disabled = false;
+        };
+        reader.readAsDataURL(file);
     }
+
+    // Fungsi Modal Disposisi
+    function bukaModalDisposisi(id) {
+        document.getElementById('targetIdAgenda').value = id;
+        document.getElementById('modalDisposisi').classList.replace('hidden', 'flex');
+    }
+    function tutupDisposisi() { document.getElementById('modalDisposisi').classList.replace('flex', 'hidden'); }
+
+    // Fungsi Kirim WA
+    function kirimWA(acara, tgl, lok) {
+        const pesan = encodeURIComponent(`*AGENDA AS'ADIYAH*\nKegiatan: ${acara}\nWaktu: ${tgl}\nLokasi: ${lok}\n\nMohon kehadirannya.`);
+        window.open(`https://wa.me/?text=${pesan}`, '_blank');
+    }
+
+    muatAgenda();
 </script>
