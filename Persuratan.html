@@ -1,133 +1,130 @@
-<div class="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100 animate-fade-in">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-            <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">ARSIP PERSURATAN</h2>
-            <p class="text-gray-400 font-medium italic text-sm">Manajemen Digital Surat Masuk & Keluar</p>
-        </div>
-        <div class="bg-blue-50 px-4 py-2 rounded-2xl border border-blue-100">
-            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Database ID:</span>
-            <p class="text-[10px] font-bold text-blue-400 truncate w-32">Terhubung via Config</p>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="space-y-5">
-            <div class="p-6 bg-gray-50 rounded-[32px] border border-gray-100">
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-2">Kategori Surat</label>
-                <select id="jenisSurat" class="w-full p-4 bg-white border-none rounded-2xl shadow-sm font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none appearance-none cursor-pointer">
-                    <option value="">-- PILIH JENIS SURAT --</option>
-                    <option value="Undangan">Undangan</option>
-                    <option value="Surat Tugas">Surat Tugas</option>
-                    <option value="Surat Edaran">Surat Edaran</option>
-                    <option value="Surat Keputusan">Surat Keputusan</option>
-                    <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
-                    <option value="Surat Izin">Surat Izin</option>
-                    <option value="Surat Cuti">Surat Cuti</option>
-                    <option value="Surat Keterangan">Surat Keterangan</option>
-                    <option value="Surat Kuasa">Surat Kuasa</option>
-                    <option value="Surat Pemberhentian">Surat Pemberhentian</option>
-                    <option value="Surat Persetujuan">Surat Persetujuan</option>
-                    <option value="Surat Perintah/Instruksi">Surat Perintah/Instruksi</option>
-                    <option value="Surat Perjanjian">Surat Perjanjian</option>
-                    <option value="Surat Permohonan">Surat Permohonan</option>
-                    <option value="Surat Pernyataan">Surat Pernyataan</option>
-                    <option value="Surat Rekomendasi">Surat Rekomendasi</option>
-                    <option value="Surat Teguran">Surat Teguran</option>
-                    <option value="Surat Masuk">Surat Masuk</option>
-                </select>
+<div class="animate-fade-in space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div id="suratHeader" class="bg-[#1b5e20] text-white py-4 font-bold text-center uppercase text-[11px] tracking-widest">
+                INPUT <span id="displayJenis">PILIH JENIS SURAT</span>
             </div>
-
-            <div class="space-y-4 px-2">
+            
+            <form id="formSurat" class="p-8 space-y-5">
                 <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2">Nomor Surat</label>
-                    <input type="text" id="noSurat" placeholder="Contoh: 001/C/PP-AS/..." class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-green-500 outline-none font-bold transition-all">
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Kategori Surat</label>
+                    <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600 transition-all">
+                        <option value="" disabled selected>-- PILIH JENIS SURAT --</option>
+                        <option value="Undangan">Undangan</option>
+                        <option value="Surat Tugas">Surat Tugas</option>
+                        <option value="Surat Edaran">Surat Edaran</option>
+                        <option value="Surat Keputusan">Surat Keputusan</option>
+                        <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
+                        <option value="Surat Izin">Surat Izin</option>
+                        <option value="Surat Cuti">Surat Cuti</option>
+                        <option value="Surat Keterangan">Surat Keterangan</option>
+                        <option value="Surat Kuasa">Surat Kuasa</option>
+                        <option value="Surat Pemberhentian">Surat Pemberhentian</option>
+                        <option value="Surat Persetujuan">Surat Persetujuan</option>
+                        <option value="Surat Perintah/Intruksi">Surat Perintah/Intruksi</option>
+                        <option value="Surat Perjanjian">Surat Perjanjian</option>
+                        <option value="Surat Permohonan">Surat Permohonan</option>
+                        <option value="Surat Pernyataan">Surat Pernyataan</option>
+                        <option value="Surat Rekomendasi">Surat Rekomendasi</option>
+                        <option value="Surat Teguran">Surat Teguran</option>
+                        <option value="Surat Masuk">Surat Masuk</option>
+                    </select>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2">Tanggal Surat</label>
-                        <input type="date" id="tglSurat" class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-green-500 outline-none font-bold transition-all">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2">Tujuan / Penerima</label>
-                        <input type="text" id="tujuanSurat" placeholder="Nama/Lembaga" class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-green-500 outline-none font-bold transition-all">
-                    </div>
+                    <input type="text" id="noSurat" placeholder="No. Surat" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="date" id="tglSurat" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
                 </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2">Perihal</label>
-                    <input type="text" id="perihalSurat" placeholder="Isi perihal surat" class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-green-500 outline-none font-bold transition-all">
-                </div>
-            </div>
 
-            <button onclick="simpanKeCloud()" id="btnSimpanSurat" class="w-full bg-green-800 text-white py-5 rounded-[24px] font-black text-lg shadow-xl shadow-green-900/20 hover:bg-green-700 active:scale-95 transition-all flex items-center justify-center gap-3 mt-4">
-                <i class="fas fa-cloud-arrow-up"></i> UPLOAD & SIMPAN
-            </button>
+                <input type="text" id="tujuanSurat" placeholder="Penerima/Tujuan" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
+
+                <textarea id="perihalSurat" placeholder="Perihal" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600" rows="3"></textarea>
+
+                <div class="p-4 bg-green-50 rounded-2xl border-2 border-dashed border-green-200">
+                    <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" 
+                        class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold">
+                </div>
+
+                <button type="button" onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg shadow-yellow-200 transition-all active:scale-95">
+                    Upload & Simpan
+                </button>
+            </form>
         </div>
 
-        <div class="hidden lg:flex flex-col gap-4">
-            <div class="bg-gray-50 rounded-[40px] p-8 border border-dashed border-gray-200 flex-1 flex flex-col items-center justify-center text-center">
-                <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-sm mb-6">
-                    <i class="fas fa-file-signature text-4xl text-green-600"></i>
-                </div>
-                <h4 class="font-black text-gray-800 uppercase tracking-tight">Validasi Arsip</h4>
-                <p class="text-sm text-gray-400 mt-2 leading-relaxed px-6">Pastikan Nomor Surat dan Kategori sudah sesuai sebelum menekan tombol simpan.</p>
-            </div>
-            <div class="bg-green-800 rounded-[30px] p-6 text-white flex items-center gap-4 shadow-lg shadow-green-900/20">
-                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center"><i class="fas fa-shield-check"></i></div>
-                <div>
-                    <p class="text-[10px] font-bold text-green-300 uppercase tracking-widest">Enkripsi Berhasil</p>
-                    <p class="text-xs font-bold leading-none">Penyimpanan Terenkripsi SSL</p>
-                </div>
+        <div class="h-[600px] lg:h-auto">
+            <iframe id="pdfFrame" class="hidden w-full h-full rounded-[2.5rem] border-2 border-gray-100 bg-white shadow-sm"></iframe>
+            <div id="pdfPlaceholder" class="w-full h-full bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-gray-300">
+                <i class="fas fa-file-pdf text-6xl mb-4"></i>
+                <p class="text-[11px] font-black uppercase tracking-[0.2em]">Pratinjau Dokumen</p>
             </div>
         </div>
+
     </div>
 </div>
 
 <script>
-    async function simpanKeCloud() {
-        const btn = document.getElementById('btnSimpanSurat');
-        const jenis = document.getElementById('jenisSurat').value;
-        const no = document.getElementById('noSurat').value;
-        const perihal = document.getElementById('perihalSurat').value;
+    // Sinkronisasi Judul Header dengan Dropdown
+    function updateJenisDisplay(val) {
+        document.getElementById('displayJenis').innerText = val.toUpperCase();
+    }
 
-        if (!jenis || !no || !perihal) {
-            alert("⚠️ Mohon lengkapi data surat!");
+    // Fungsi Preview PDF
+    function previewPDF(input) {
+        const frame = document.getElementById('pdfFrame');
+        const placeholder = document.getElementById('pdfPlaceholder');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                frame.src = e.target.result;
+                frame.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Fungsi Simpan (Memanggil CONFIG dari config.js)
+    async function simpanSuratCloud() {
+        const btn = document.getElementById('btnSimpanSurat');
+        const fileInput = document.getElementById('fileSurat');
+        const file = fileInput.files[0];
+
+        if (!file || !document.getElementById('noSurat').value) {
+            alert("Mohon isi Nomor Surat dan pilih File PDF!");
             return;
         }
 
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> MENGUPLOAD...`;
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MENGUPLOAD...';
 
-        const payload = {
-            action: "simpanSurat",
-            targetID: CONFIG.DB.SURAT, // Diambil dari config.js
-            noSurat: no,
-            perihal: perihal,
-            tgl: document.getElementById('tglSurat').value,
-            tujuan: document.getElementById('tujuanSurat').value,
-            status: jenis // Kategori surat dikirim sebagai status/jenis
-        };
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const base64Data = e.target.result.split(',')[1];
+            const payload = {
+                action: "simpanSurat",
+                targetID: CONFIG.DB.SURAT,
+                base64: base64Data,
+                name: `${document.getElementById('jenisSurat').value}_${document.getElementById('noSurat').value}.pdf`,
+                noSurat: document.getElementById('noSurat').value,
+                jenis: document.getElementById('jenisSurat').value,
+                tgl: document.getElementById('tglSurat').value,
+                tujuan: document.getElementById('tujuanSurat').value,
+                perihal: document.getElementById('perihalSurat').value
+            };
 
-        try {
-            const response = await fetch(CONFIG.SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            const res = await response.json();
-            
-            if (res.status === "OK") {
-                alert("✅ Sukses: Surat Berhasil Diarsipkan!");
-                // Reset Form
-                document.getElementById('noSurat').value = "";
-                document.getElementById('perihalSurat').value = "";
-                document.getElementById('tujuanSurat').value = "";
-            } else {
-                alert("❌ Gagal: " + res.message);
+            try {
+                const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const res = await response.json();
+                alert(res.message);
+                if(res.status === "OK") location.reload();
+            } catch (err) {
+                alert("Gagal terhubung ke server!");
+            } finally {
+                btn.innerHTML = "Upload & Simpan";
+                btn.disabled = false;
             }
-        } catch (e) {
-            alert("❌ Kesalahan Server: Cek koneksi internet atau SCRIPT_URL");
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> UPLOAD & SIMPAN';
-        }
+        };
+        reader.readAsDataURL(file);
     }
 </script>
