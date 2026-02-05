@@ -4,7 +4,7 @@
  */
 
 const CONFIG = {
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxT-YRcmJvRpdWvgkKq1BkDHHQd8VSAxPQTD2xq1j81zyocl7gnmmE3C3RCobYQt8KVTQ/exec',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz8yr4tF_bIpS1vkAjJf9IAFnEkvtdwqIl-zUTDmDAz7QKBAYRrC8feR4qz6y1UP-4X/exec',
     
     DB: {
         LOGIN: '1HTdBcYKE1ztWtj1u_6rtC0xAmE-Mknl_4mEG6og1xPg',
