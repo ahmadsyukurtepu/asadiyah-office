@@ -9,23 +9,23 @@
                 <select id="jenisSurat" onchange="document.getElementById('displayJenis').innerText = this.value.toUpperCase()" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
                     <option value="" disabled selected>-- PILIH JENIS SURAT --</option>
                     <option value="Undangan">Undangan</option>
-        <option value="Surat Tugas">Surat Tugas</option>
-        <option value="Surat Edaran">Surat Edaran</option>
-        <option value="Surat Keputusan">Surat Keputusan</option>
-        <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
-        <option value="Surat Izin">Surat Izin</option>
-        <option value="Surat Cuti">Surat Cuti</option>
-        <option value="Surat Keterangan">Surat Keterangan</option>
-        <option value="Surat Kuasa">Surat Kuasa</option>
-        <option value="Surat Pemberhentian">Surat Pemberhentian</option>
-        <option value="Surat Persetujuan">Surat Persetujuan</option>
-        <option value="Surat Perintah/Instruksi">Surat Perintah/Instruksi</option>
-        <option value="Surat Perjanjian">Surat Perjanjian</option>
-        <option value="Surat Permohonan">Surat Permohonan</option>
-        <option value="Surat Pernyataan">Surat Pernyataan</option>
-        <option value="Surat Rekomendasi">Surat Rekomendasi</option>
-        <option value="Surat Teguran">Surat Teguran</option>
-        <option value="Surat Masuk">Surat Masuk</option>
+                    <option value="Surat Tugas">Surat Tugas</option>
+                    <option value="Surat Edaran">Surat Edaran</option>
+                    <option value="Surat Keputusan">Surat Keputusan</option>
+                    <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
+                    <option value="Surat Izin">Surat Izin</option>
+                    <option value="Surat Cuti">Surat Cuti</option>
+                    <option value="Surat Keterangan">Surat Keterangan</option>
+                    <option value="Surat Kuasa">Surat Kuasa</option>
+                    <option value="Surat Pemberhentian">Surat Pemberhentian</option>
+                    <option value="Surat Persetujuan">Surat Persetujuan</option>
+                    <option value="Surat Perintah/Instruksi">Surat Perintah/Instruksi</option>
+                    <option value="Surat Perjanjian">Surat Perjanjian</option>
+                    <option value="Surat Permohonan">Surat Permohonan</option>
+                    <option value="Surat Pernyataan">Surat Pernyataan</option>
+                    <option value="Surat Rekomendasi">Surat Rekomendasi</option>
+                    <option value="Surat Teguran">Surat Teguran</option>
+                    <option value="Surat Masuk">Surat Masuk</option>
                 </select>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -91,8 +91,6 @@
     // FUNGSI MUAT DATA
     async function muatDataSurat() {
         const tbody = document.getElementById('riwayatSuratBody');
-        
-        // Cek apakah CONFIG sudah ada
         if (typeof CONFIG === 'undefined') {
             tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-red-500">ERROR: config.js tidak terbaca!</td></tr>';
             return;
@@ -170,7 +168,5 @@
         reader.readAsDataURL(file);
     }
 
-    // Jalankan saat halaman dibuka
     setTimeout(muatDataSurat, 1000); 
 </script>
-
