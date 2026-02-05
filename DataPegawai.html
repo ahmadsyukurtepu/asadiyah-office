@@ -58,12 +58,20 @@
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
 
-        try {
-            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaPegawai&targetID=${CONFIG.DB.PEGAWAI}`);
-            
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
+        // ... kode sebelumnya (overlay, icon, dll)
+
+try {
+    // HAPUS baris fetch yang lama, GANTI dengan ini:
+    const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaPegawai&targetID=${CONFIG.DB.PEGAWAI}`, {
+        method: 'GET',
+        redirect: 'follow'
+    });
+    
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const data = await response.json();
+    
+    // ... kode selanjutnya (let html = '', data.forEach, dll)
 
             let html = '';
             let tL = 0, tP = 0;
@@ -127,3 +135,4 @@
     // Jalankan otomatis
     muatDataPegawai();
 </script>
+
