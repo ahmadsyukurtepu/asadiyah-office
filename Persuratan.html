@@ -98,45 +98,23 @@
 
     // Ambil Data Riwayat dari Spreadsheet
     async function muatDataSurat() {
-    const tbody = document.getElementById('riwayatSuratBody');
-    if (!tbody) return;
-
-    // Tambahkan log untuk memastikan ID terbaca di console browser
-    console.log("Menghubungi ID Surat:", CONFIG.DB.SURAT);
+    // 1. Pastikan CONFIG.DB.SURAT berisi ID yang benar
+    const targetID = CONFIG.DB.SURAT;
+    
+    // 2. Gunakan URLSearchParams agar penyusunan URL tidak salah (menghindari error spasi/karakter)
+    const params = new URLSearchParams({
+        action: 'bacaSurat',
+        targetID: targetID
+    });
 
     try {
-        // Gunakan URLSearchParams agar parameter terformat dengan sempurna
-        const params = new URLSearchParams({
-            action: 'bacaSurat',
-            targetID: CONFIG.DB.SURAT
-        });
-
+        // 3. Gabungkan SCRIPT_URL dengan params
         const response = await fetch(`${CONFIG.SCRIPT_URL}?${params.toString()}`);
         const data = await response.json();
         
-        if (data.status === "ERROR") {
-            tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-500">${data.message}</td></tr>`;
-            return;
-        }
-
-        let html = '';
-        data.forEach(row => {
-            html += `
-                <tr class="border-b border-gray-50 hover:bg-gray-50">
-                    <td class="px-8 py-5 text-gray-400 text-[10px]">${row.waktu}</td>
-                    <td class="px-6 py-5 uppercase">${row.jenis}</td>
-                    <td class="px-6 py-5 text-green-700 font-black">${row.nomor}</td>
-                    <td class="px-6 py-5 text-gray-500">${row.tujuan}</td>
-                    <td class="px-8 py-5 text-center">
-                        <a href="${row.link}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></a>
-                    </td>
-                </tr>`;
-        });
-        tbody.innerHTML = html || '<tr><td colspan="5" class="py-10 text-center">Data kosong.</td></tr>';
-
-    } catch (e) {
-        console.error("Fetch Error:", e);
-        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-red-500">Gagal terhubung ke Server Cloud.</td></tr>';
+        // ... proses data ke tabel ...
+    } catch (err) {
+        console.error("Gagal memuat data:", err);
     }
 }
 
@@ -199,4 +177,5 @@
     // Jalankan pertama kali saat load
     muatDataSurat();
 </script>
+
 
