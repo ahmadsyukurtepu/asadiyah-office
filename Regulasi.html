@@ -2,44 +2,43 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div class="bg-[#1b5e20] text-white py-4 font-bold text-center uppercase text-[11px] tracking-widest">
-                INPUT <span id="displayJenisReg">REGULASI BARU</span>
+                INPUT <span id="displayJenisReg">DOKUMEN REGULASI</span>
             </div>
             
             <form id="formRegulasi" class="p-8 space-y-5">
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="nomorReg" placeholder="No. Regulasi (Contoh: 001/SK/2026)" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="nomorReg" placeholder="No. Regulasi" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
                     <input type="date" id="tanggalReg" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
                 </div>
 
-                <textarea id="judulReg" placeholder="Judul atau Perihal Regulasi..." class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600" rows="3"></textarea>
+                <textarea id="judulReg" placeholder="Judul/Perihal Regulasi" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600" rows="3"></textarea>
 
-                <input type="text" id="linkReg" placeholder="URL Link Dokumen (Google Drive/SatuSehat)" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
+                <div class="p-4 bg-green-50 rounded-2xl border-2 border-dashed border-green-200">
+                    <input type="file" id="fileRegulasi" accept="application/pdf" onchange="previewPDFReg(this)" class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold">
+                </div>
 
                 <button type="button" onclick="simpanRegulasiCloud()" id="btnSimpanReg" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg transition-all active:scale-95">
-                    Simpan Regulasi
+                    Upload & Simpan Regulasi
                 </button>
             </form>
         </div>
 
-        <div class="h-[400px] lg:h-auto">
+        <div class="h-[450px] lg:h-auto">
             <iframe id="regFrame" class="hidden w-full h-full rounded-[2.5rem] border-2 border-gray-100 bg-white"></iframe>
             <div id="regPlaceholder" class="w-full h-full bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-gray-300 p-10 text-center">
-                <i class="fas fa-gavel text-6xl mb-4"></i>
-                <p class="text-[11px] font-black uppercase tracking-widest">Pratinjau Link Regulasi</p>
-                <p class="text-[9px] mt-2 italic text-gray-400">Masukkan link dokumen untuk melihat pratinjau</p>
+                <i class="fas fa-file-pdf text-6xl mb-4"></i>
+                <p class="text-[11px] font-black uppercase tracking-widest">Pratinjau Dokumen</p>
+                <p class="text-[9px] mt-2 italic text-gray-400">Pilih file PDF untuk melihat isi</p>
             </div>
         </div>
     </div>
 
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-8 border-b border-gray-50 flex flex-wrap justify-between items-center gap-4">
-            <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Daftar Regulasi & SK</h3>
-            
+            <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Arsip Regulasi</h3>
             <div class="flex items-center gap-2">
-                <div class="relative">
-                    <input type="text" id="cariReg" onkeyup="filterTabelRegulasi()" placeholder="Cari regulasi..." class="bg-gray-50 border-2 border-gray-100 px-4 py-2 rounded-xl text-[10px] font-bold outline-none focus:border-green-600 w-48 md:w-64">
-                </div>
-                <button onclick="muatDataRegulasi()" class="bg-gray-50 p-2 rounded-xl text-green-700 hover:rotate-180 transition-all duration-500 border-2 border-gray-100">
+                <input type="text" id="cariReg" onkeyup="filterTabelRegulasi()" placeholder="Cari..." class="bg-gray-50 border-2 border-gray-100 px-4 py-2 rounded-xl text-[10px] font-bold outline-none focus:border-green-600 w-48">
+                <button onclick="muatDataRegulasi()" class="bg-gray-50 p-2 rounded-xl text-green-700 hover:rotate-180 transition-all border-2 border-gray-100">
                     <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
@@ -50,99 +49,101 @@
                     <tr class="text-[10px] uppercase font-black text-gray-400 tracking-widest border-b border-gray-50">
                         <th class="px-8 py-5">Nomor</th>
                         <th class="px-6 py-5">Tanggal</th>
-                        <th class="px-6 py-5">Judul Regulasi</th>
+                        <th class="px-6 py-5">Judul</th>
                         <th class="px-8 py-5 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="riwayatRegulasiBody" class="text-[11px] font-bold text-gray-600">
-                    <tr><td colspan="4" class="py-10 text-center text-gray-300">Memuat regulasi...</td></tr>
-                </tbody>
+                <tbody id="riwayatRegulasiBody" class="text-[11px] font-bold text-gray-600"></tbody>
             </table>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. FILTER PENCARIAN
-    function filterTabelRegulasi() {
-        const input = document.getElementById("cariReg").value.toUpperCase();
-        const rows = document.getElementById("riwayatRegulasiBody").getElementsByTagName("tr");
-        for (let row of rows) {
-            row.style.display = row.innerText.toUpperCase().includes(input) ? "" : "none";
+    // PRATINJAU PDF SEBELUM UPLOAD
+    function previewPDFReg(input) {
+        const frame = document.getElementById('regFrame');
+        const placeholder = document.getElementById('regPlaceholder');
+        if (input.files && input.files[0]) {
+            const blobURL = URL.createObjectURL(input.files[0]);
+            frame.src = blobURL;
+            frame.classList.remove('hidden');
+            placeholder.classList.add('hidden');
         }
     }
 
-    // 2. LOAD DATA DARI SERVER
+    // SIMPAN DATA + FILE KE SERVER
+    async function simpanRegulasiCloud() {
+        const btn = document.getElementById('btnSimpanReg');
+        const fileInput = document.getElementById('fileRegulasi');
+        const file = fileInput.files[0];
+        
+        if (!file || !document.getElementById('nomorReg').value) {
+            alert("Lengkapi nomor dan pilih file PDF!"); return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = "MENGUPLOAD PDF...";
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const payload = {
+                action: "simpanRegulasi",
+                targetID: CONFIG.DB.REGULASI,
+                nomor: document.getElementById('nomorReg').value,
+                tanggal: document.getElementById('tanggalReg').value,
+                judul: document.getElementById('judulReg').value,
+                fileData: e.target.result.split(',')[1], // Ambil Base64 saja
+                fileName: "REG_" + document.getElementById('nomorReg').value.replace(/\//g, '-') + ".pdf"
+            };
+
+            try {
+                const response = await fetch(CONFIG.SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
+                const res = await response.json();
+                alert(res.message);
+                if(res.status === "OK") {
+                    document.getElementById('formRegulasi').reset();
+                    document.getElementById('regFrame').classList.add('hidden');
+                    document.getElementById('regPlaceholder').classList.remove('hidden');
+                    muatDataRegulasi();
+                }
+            } catch (err) { alert("Error Server!"); }
+            finally { btn.disabled = false; btn.innerHTML = "Upload & Simpan Regulasi"; }
+        };
+        reader.readAsDataURL(file);
+    }
+
     async function muatDataRegulasi() {
         const tbody = document.getElementById('riwayatRegulasiBody');
+        tbody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-gray-300">Memuat...</td></tr>';
         try {
             const url = `${CONFIG.SCRIPT_URL}?action=bacaRegulasi&targetID=${CONFIG.DB.REGULASI}`;
             const response = await fetch(url);
             const data = await response.json();
-
             let html = '';
-            if (data.length > 0) {
-                data.forEach(row => {
-                    html += `
-                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
-                            <td class="px-8 py-5 text-green-700 font-black">${row.nomor}</td>
-                            <td class="px-6 py-5 text-gray-400 text-[10px]">${row.tanggal}</td>
-                            <td class="px-6 py-5 text-gray-700 uppercase">${row.judul}</td>
-                            <td class="px-8 py-5 text-center">
-                                <a href="${row.link}" target="_blank" class="bg-blue-50 text-blue-600 p-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                            </td>
-                        </tr>`;
-                });
-            } else {
-                html = '<tr><td colspan="4" class="py-10 text-center text-gray-400">BELUM ADA REGULASI</td></tr>';
-            }
-            tbody.innerHTML = html;
-        } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-red-500">Gagal memuat data</td></tr>';
-        }
-    }
-
-    // 3. SIMPAN DATA KE SERVER
-    async function simpanRegulasiCloud() {
-        const btn = document.getElementById('btnSimpanReg');
-        const payload = {
-            action: "simpanRegulasi",
-            targetID: CONFIG.DB.REGULASI,
-            nomor: document.getElementById('nomorReg').value,
-            tanggal: document.getElementById('tanggalReg').value,
-            judul: document.getElementById('judulReg').value,
-            link: document.getElementById('linkReg').value
-        };
-
-        if (!payload.nomor || !payload.judul) {
-            alert("Nomor dan Judul wajib diisi!");
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerHTML = "MENYIMPAN...";
-
-        try {
-            const response = await fetch(CONFIG.SCRIPT_URL, { 
-                method: 'POST', 
-                body: JSON.stringify(payload) 
+            data.forEach(row => {
+                html += `
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
+                        <td class="px-8 py-5 text-green-700 font-black">${row.nomor}</td>
+                        <td class="px-6 py-5 text-gray-400 text-[10px]">${row.tanggal}</td>
+                        <td class="px-6 py-5 text-gray-700 uppercase">${row.judul}</td>
+                        <td class="px-8 py-5 text-center">
+                            <a href="${row.link}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-file-pdf fa-lg"></i></a>
+                        </td>
+                    </tr>`;
             });
-            const res = await response.json();
-            alert(res.message);
-            if(res.status === "OK") {
-                document.getElementById('formRegulasi').reset();
-                muatDataRegulasi();
-            }
-        } catch (err) { 
-            alert("Koneksi gagal!"); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerHTML = "Simpan Regulasi"; 
-        }
+            tbody.innerHTML = html || '<tr><td colspan="4" class="py-10 text-center text-gray-400">KOSONG</td></tr>';
+        } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-red-500">Gagal load data</td></tr>'; }
     }
 
-    // Jalankan saat load
+    function filterTabelRegulasi() {
+        const val = document.getElementById("cariReg").value.toUpperCase();
+        const rows = document.getElementById("riwayatRegulasiBody").getElementsByTagName("tr");
+        for (let r of rows) r.style.display = r.innerText.toUpperCase().includes(val) ? "" : "none";
+    }
+
     setTimeout(muatDataRegulasi, 500);
 </script>
