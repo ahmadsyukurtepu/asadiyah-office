@@ -7,29 +7,29 @@
             
             <form id="formSurat" class="p-8 space-y-4">
                 <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">01. Kategori Surat</label>
-                    <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600 transition-all">
-                        <option value="" disabled selected>-- PILIH JENIS --</option>
-                        <option value="Undangan">Undangan</option>
-                        <option value="Surat Tugas">Surat Tugas</option>
-                        <option value="Surat Edaran">Surat Edaran</option>
-                        <option value="Surat Keputusan">Surat Keputusan</option>
-                        <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
-                        <option value="Surat Izin">Surat Izin</option>
-                        <option value="Surat Cuti">Surat Cuti</option>
-                        <option value="Surat Keterangan">Surat Keterangan</option>
-                        <option value="Surat Kuasa">Surat Kuasa</option>
-                        <option value="Surat Pemberhentian">Surat Pemberhentian</option>
-                        <option value="Surat Persetujuan">Surat Persetujuan</option>
-                        <option value="Surat Perintah/Intruksi">Surat Perintah/Intruksi</option>
-                        <option value="Surat Perjanjian">Surat Perjanjian</option>
-                        <option value="Surat Permohonan">Surat Permohonan</option>
-                        <option value="Surat Pernyataan">Surat Pernyataan</option>
-                        <option value="Surat Rekomendasi">Surat Rekomendasi</option>
-                        <option value="Surat Teguran">Surat Teguran</option>
-                        <option value="Surat Masuk">Surat Masuk</option>
-                    </select>
-                </div>
+    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">01. Kategori Surat</label>
+    <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600 transition-all">
+        <option value="" disabled selected>-- PILIH JENIS SURAT (18 KATEGORI) --</option>
+        <option value="Undangan">01. Undangan</option>
+        <option value="Surat Tugas">02. Surat Tugas</option>
+        <option value="Surat Edaran">03. Surat Edaran</option>
+        <option value="Surat Keputusan">04. Surat Keputusan</option>
+        <option value="Surat Himbauan/Penyampaian">05. Surat Himbauan/Penyampaian</option>
+        <option value="Surat Izin">06. Surat Izin</option>
+        <option value="Surat Cuti">07. Surat Cuti</option>
+        <option value="Surat Keterangan">08. Surat Keterangan</option>
+        <option value="Surat Kuasa">09. Surat Kuasa</option>
+        <option value="Surat Pemberhentian">10. Surat Pemberhentian</option>
+        <option value="Surat Persetujuan">11. Surat Persetujuan</option>
+        <option value="Surat Perintah/Intruksi">12. Surat Perintah/Intruksi</option>
+        <option value="Surat Perjanjian">13. Surat Perjanjian</option>
+        <option value="Surat Permohonan">14. Surat Permohonan</option>
+        <option value="Surat Pernyataan">15. Surat Pernyataan</option>
+        <option value="Surat Rekomendasi">16. Surat Rekomendasi</option>
+        <option value="Surat Teguran">17. Surat Teguran</option>
+        <option value="Surat Masuk">18. Surat Masuk</option>
+    </select>
+</div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -244,3 +244,4 @@
     // Jalankan muat data saat halaman dibuka
     muatDataSurat();
 </script>
+
