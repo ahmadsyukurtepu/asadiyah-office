@@ -17,7 +17,7 @@
                         <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
                         <option value="Surat Izin">Surat Izin</option>
                         <option value="Surat Masuk">Surat Masuk</option>
-                        </select>
+                    </select>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -30,7 +30,7 @@
 
                 <div class="p-4 bg-green-50 rounded-2xl border-2 border-dashed border-green-200">
                     <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" 
-                        class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold">
+                        class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold cursor-pointer">
                 </div>
 
                 <button type="button" onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg transition-all active:scale-95">
@@ -68,7 +68,7 @@
                     </tr>
                 </thead>
                 <tbody id="riwayatSuratBody" class="text-[11px] font-bold text-gray-600">
-                    <tr><td colspan="5" class="py-10 text-center text-gray-300">Memuat database...</td></tr>
+                    <tr><td colspan="5" class="py-10 text-center text-gray-300 animate-pulse">Memuat database...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -76,12 +76,12 @@
 </div>
 
 <script>
-    // Update label header saat pilih jenis surat
+    // 1. Update Label Header
     function updateJenisDisplay(val) { 
         document.getElementById('displayJenis').innerText = val.toUpperCase(); 
     }
 
-    // Fungsi Pratinjau PDF menggunakan ObjectURL (Lebih cepat & stabil)
+    // 2. Preview PDF
     function previewPDF(input) {
         const frame = document.getElementById('pdfFrame');
         const placeholder = document.getElementById('pdfPlaceholder');
@@ -96,41 +96,64 @@
         }
     }
 
-    // Ambil Data Riwayat dari Spreadsheet
+    // 3. Muat Data Riwayat (GET)
     async function muatDataSurat() {
-    const tbody = document.getElementById('riwayatSuratBody');
-    
-    // Gunakan URLSearchParams agar penyusunan link otomatis benar
-    const queryString = new URLSearchParams({
-        action: "bacaSurat",
-        targetID: CONFIG.DB.SURAT // Ini akan mengambil ID yang tadi muncul di console
-    }).toString();
+        const tbody = document.getElementById('riwayatSuratBody');
+        if (!tbody) return;
 
-    try {
-        const response = await fetch(`${CONFIG.SCRIPT_URL}?${queryString}`);
-        const data = await response.json();
-        
-        // Cek jika server mengirim error
-        if (data.status === "ERROR") {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-500">${data.message}</td></tr>`;
-            return;
+        const params = new URLSearchParams({
+            action: "bacaSurat",
+            targetID: CONFIG.DB.SURAT
+        }).toString();
+
+        try {
+            const response = await fetch(`${CONFIG.SCRIPT_URL}?${params}`);
+            const data = await response.json();
+            
+            if (data.status === "ERROR") {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-500 font-bold">${data.message}</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            if (data.length > 0) {
+                data.forEach(row => {
+                    html += `
+                        <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
+                            <td class="px-8 py-5 text-gray-400 text-[10px]">${row.waktu}</td>
+                            <td class="px-6 py-5 uppercase font-bold text-gray-700">${row.jenis}</td>
+                            <td class="px-6 py-5 text-green-700 font-black">${row.nomor}</td>
+                            <td class="px-6 py-5 text-gray-500">${row.tujuan}</td>
+                            <td class="px-8 py-5 text-center">
+                                <div class="flex justify-center">
+                                    <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                        <i class="fas fa-eye text-[10px]"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                html = '<tr><td colspan="5" class="py-10 text-center text-gray-300 uppercase tracking-widest">Belum ada data surat</td></tr>';
+            }
+            tbody.innerHTML = html;
+            
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-400">Gagal terhubung ke Cloud Database</td></tr>`;
         }
-
-        // Tampilkan data ke tabel...
-        // (Gunakan kode tabel yang sudah kita bahas sebelumnya)
-        
-    } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Gagal memuat data. Periksa koneksi internet.</td></tr>`;
     }
-}
-    // Upload & Simpan ke Cloud
+
+    // 4. Simpan Data (POST)
     async function simpanSuratCloud() {
         const btn = document.getElementById('btnSimpanSurat');
         const fileInput = document.getElementById('fileSurat');
         const file = fileInput.files[0];
+        const noSurat = document.getElementById('noSurat').value;
+        const jenisSurat = document.getElementById('jenisSurat').value;
 
-        if (!file || !document.getElementById('noSurat').value) { 
-            alert("Mohon lengkapi No. Surat dan Pilih file PDF!"); 
+        // Validasi Sederhana
+        if (!jenisSurat || !noSurat || !file) { 
+            alert("Mohon isi Kategori, Nomor Surat, dan Lampirkan PDF!"); 
             return; 
         }
 
@@ -142,14 +165,14 @@
             const payload = {
                 action: "simpanSurat",
                 targetID: CONFIG.DB.SURAT,
-                jenis: document.getElementById('jenisSurat').value,
-                noSurat: document.getElementById('noSurat').value,
+                jenis: jenisSurat,
+                noSurat: noSurat,
                 tglSurat: document.getElementById('tglSurat').value,
                 tujuan: document.getElementById('tujuanSurat').value,
                 perihal: document.getElementById('perihalSurat').value,
-                officer: localStorage.getItem('namaUser') || "Officer",
+                officer: localStorage.getItem('namaUser') || "Admin Kantor",
                 fileData: e.target.result.split(',')[1],
-                fileName: `SURAT_${document.getElementById('noSurat').value}.pdf`
+                fileName: `SURAT_${noSurat.replace(/[/\\?%*:|"<>]/g, '-')}.pdf`
             };
 
             try {
@@ -159,18 +182,18 @@
                 });
                 const res = await response.json();
                 
-                alert(res.message);
-                
-                // Reset Form & Preview
-                document.getElementById('formSurat').reset();
-                document.getElementById('pdfFrame').classList.add('hidden');
-                document.getElementById('pdfPlaceholder').classList.remove('hidden');
-                document.getElementById('displayJenis').innerText = "PILIH JENIS SURAT";
-                
-                // Refresh Tabel
-                muatDataSurat(); 
+                if (res.status === "OK") {
+                    alert("Berhasil! " + res.message);
+                    document.getElementById('formSurat').reset();
+                    document.getElementById('pdfFrame').classList.add('hidden');
+                    document.getElementById('pdfPlaceholder').classList.remove('hidden');
+                    document.getElementById('displayJenis').innerText = "PILIH JENIS SURAT";
+                    muatDataSurat(); // Refresh Tabel
+                } else {
+                    alert("Gagal Simpan: " + res.message);
+                }
             } catch (err) {
-                alert("Gagal koneksi ke server Cloud!");
+                alert("Kesalahan Sistem: Gagal mengirim data ke Cloud.");
             } finally {
                 btn.innerHTML = "Upload & Simpan";
                 btn.disabled = false;
@@ -179,9 +202,6 @@
         reader.readAsDataURL(file);
     }
 
-    // Jalankan pertama kali saat load
+    // Inisialisasi Pertama
     muatDataSurat();
 </script>
-
-
-
