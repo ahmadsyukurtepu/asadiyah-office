@@ -7,18 +7,18 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
-                <select id="sortKategori" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600">
+                <select id="sortKategori" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600 transition-all cursor-pointer">
                     <option value="PUSAT">🏢 PUSAT</option>
                     <option value="CABANG">🌿 CABANG</option>
                 </select>
 
-                <select id="sortTahun" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600">
+                <select id="sortTahun" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600 transition-all cursor-pointer">
                     <option value="all">SEMUA TAHUN</option>
                     <option value="2026/2027">2026/2027</option>
                     <option value="2025/2026">2025/2026</option>
                 </select>
 
-                <button onclick="muatDataSantri()" id="btnRefresh" class="bg-green-800 text-white p-4 rounded-2xl hover:bg-green-700 transition-all">
+                <button onclick="muatDataSantri()" id="btnRefresh" class="bg-green-800 text-white p-4 rounded-2xl hover:bg-green-700 active:scale-95 transition-all shadow-lg shadow-green-900/20">
                     <i class="fas fa-sync-alt" id="iconRefresh"></i>
                 </button>
             </div>
@@ -27,8 +27,10 @@
 
     <div class="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden relative min-h-[300px]">
         <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col">
-            <i class="fas fa-circle-notch fa-spin text-3xl text-green-700 mb-2"></i>
-            <p class="text-[10px] font-black text-gray-400 uppercase">Mengambil Data Cloud...</p>
+            <div class="relative">
+                <i class="fas fa-circle-notch fa-spin text-4xl text-green-700"></i>
+            </div>
+            <p class="text-[10px] font-black text-gray-400 uppercase mt-4 tracking-widest">Mengambil Data Cloud...</p>
         </div>
 
         <div class="overflow-x-auto">
@@ -42,15 +44,15 @@
                         <th class="px-8 py-6 text-center">Total</th>
                     </tr>
                 </thead>
-                <tbody id="tabelSantriBody" class="text-[11px] font-bold text-gray-600 italic text-center">
-                    <tr><td colspan="5" class="py-20 text-gray-300">Silakan klik refresh untuk memuat data</td></tr>
+                <tbody id="tabelSantriBody" class="text-[11px] font-bold text-gray-600">
+                    <tr><td colspan="5" class="py-20 text-center text-gray-300 italic">Silakan klik refresh untuk memuat data</td></tr>
                 </tbody>
-                <tfoot id="tabelSantriFooter" class="bg-gray-50/50 hidden">
-                    <tr class="text-[11px] font-black text-gray-800">
-                        <td colspan="2" class="px-8 py-5 text-right uppercase">Total Rekapitulasi:</td>
-                        <td id="totalL" class="px-6 py-5 text-center text-blue-600">0</td>
-                        <td id="totalP" class="px-6 py-5 text-center text-pink-600">0</td>
-                        <td id="totalSemua" class="px-8 py-5 text-center text-green-800 font-black">0</td>
+                <tfoot id="tabelSantriFooter" class="bg-gray-50/80 hidden">
+                    <tr class="text-[11px] font-black text-gray-800 border-t-2 border-gray-100">
+                        <td colspan="2" class="px-8 py-6 text-right uppercase tracking-wider">Total Rekapitulasi:</td>
+                        <td id="totalL" class="px-6 py-6 text-center text-blue-600 text-sm">0</td>
+                        <td id="totalP" class="px-6 py-6 text-center text-pink-600 text-sm">0</td>
+                        <td id="totalSemua" class="px-8 py-6 text-center text-green-800 font-black text-sm bg-green-50">0</td>
                     </tr>
                 </tfoot>
             </table>
@@ -64,61 +66,76 @@
         const icon = document.getElementById('iconRefresh');
         const kat = document.getElementById('sortKategori').value;
         const thnFilter = document.getElementById('sortTahun').value;
+        const footer = document.getElementById('tabelSantriFooter');
         
-        // Ambil ID dari CONFIG berdasarkan pilihan kategori
+        // Ambil ID dari CONFIG
         const targetID = (kat === 'PUSAT') ? CONFIG.DB.SANTRI_PUSAT : CONFIG.DB.SANTRI_CABANG;
 
         overlay.classList.remove('hidden');
         icon.classList.add('fa-spin');
+        footer.classList.add('hidden'); // Sembunyikan footer saat loading
 
         try {
             const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaSantri&targetID=${targetID}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
             const data = await response.json();
 
             let html = '';
             let tL = 0, tP = 0, tTotal = 0;
 
-            // Filter dan Render Data
-            data.filter(row => thnFilter === 'all' || row.tahun === thnFilter).forEach(row => {
-                const totalRow = parseInt(row.l) + parseInt(row.p);
-                tL += parseInt(row.l);
-                tP += parseInt(row.p);
-                tTotal += totalRow;
+            const filteredData = data.filter(row => thnFilter === 'all' || row.tahun === thnFilter);
 
-                html += `
-                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all animate-fade-in">
-                        <td class="px-8 py-5 text-gray-400 font-medium">${row.tahun}</td>
-                        <td class="px-6 py-5">
-                            <span class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full ${kat === 'PUSAT' ? 'bg-blue-500' : 'bg-green-500'}"></span>
-                                ${row.lembaga}
-                            </span>
-                        </td>
-                        <td class="px-6 py-5 text-center">${row.l}</td>
-                        <td class="px-6 py-5 text-center">${row.p}</td>
-                        <td class="px-8 py-5 text-center">
-                            <span class="bg-gray-100 px-3 py-1 rounded-lg text-gray-800">${totalRow}</span>
-                        </td>
-                    </tr>
-                `;
-            });
+            if (filteredData.length > 0) {
+                filteredData.forEach(row => {
+                    // Pastikan parsing angka aman
+                    const valL = parseInt(row.l) || 0;
+                    const valP = parseInt(row.p) || 0;
+                    const totalRow = valL + valP;
+                    
+                    tL += valL;
+                    tP += valP;
+                    tTotal += totalRow;
 
-            document.getElementById('tabelSantriBody').innerHTML = html || '<tr><td colspan="5" class="py-20 text-gray-400">Tidak ada data untuk tahun ini</td></tr>';
-            
-            // Update Footer
-            document.getElementById('totalL').innerText = tL;
-            document.getElementById('totalP').innerText = tP;
-            document.getElementById('totalSemua').innerText = tTotal + " Santri";
-            document.getElementById('tabelSantriFooter').classList.remove('hidden');
+                    html += `
+                        <tr class="border-b border-gray-50 hover:bg-green-50/30 transition-colors duration-200">
+                            <td class="px-8 py-5 text-gray-400 font-medium">${row.tahun}</td>
+                            <td class="px-6 py-5">
+                                <span class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full shadow-sm ${kat === 'PUSAT' ? 'bg-blue-500' : 'bg-green-500'}"></span>
+                                    <span class="text-gray-700">${row.lembaga}</span>
+                                </span>
+                            </td>
+                            <td class="px-6 py-5 text-center font-mono">${valL.toLocaleString()}</td>
+                            <td class="px-6 py-5 text-center font-mono">${valP.toLocaleString()}</td>
+                            <td class="px-8 py-5 text-center">
+                                <span class="bg-gray-100 px-4 py-1.5 rounded-full text-gray-800 font-black text-[10px]">${totalRow.toLocaleString()}</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('tabelSantriBody').innerHTML = html;
+                
+                // Update Footer
+                document.getElementById('totalL').innerText = tL.toLocaleString();
+                document.getElementById('totalP').innerText = tP.toLocaleString();
+                document.getElementById('totalSemua').innerText = tTotal.toLocaleString() + " SANTRI";
+                footer.classList.remove('hidden');
+            } else {
+                document.getElementById('tabelSantriBody').innerHTML = '<tr><td colspan="5" class="py-20 text-center text-gray-400 uppercase tracking-widest text-[10px] font-black">Data Tidak Ditemukan</td></tr>';
+            }
 
         } catch (e) {
-            alert("Gagal memuat data dari Cloud!");
+            console.error("Fetch Error:", e);
+            alert("Gagal terhubung ke server. Pastikan koneksi internet stabil.");
+            document.getElementById('tabelSantriBody').innerHTML = '<tr><td colspan="5" class="py-20 text-center text-red-400 italic">Terjadi kesalahan saat memuat data.</td></tr>';
         } finally {
             overlay.classList.add('hidden');
             icon.classList.remove('fa-spin');
         }
     }
 
-    // Jalankan saat halaman dibuka
+    // Jalankan otomatis
     muatDataSantri();
 </script>
