@@ -98,33 +98,47 @@
 
     // Ambil Data Riwayat dari Spreadsheet
     async function muatDataSurat() {
-        const tbody = document.getElementById('riwayatSuratBody');
-        try {
-            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaSurat&targetID=${CONFIG.DB.SURAT}`);
-            const data = await response.json();
-            let html = '';
-            
-            data.forEach(row => {
-                html += `
-                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
+    const tbody = document.getElementById('riwayatSuratBody');
+    if (!tbody) return;
+
+    // Tambahkan log untuk memastikan ID terbaca di console browser
+    console.log("Menghubungi ID Surat:", CONFIG.DB.SURAT);
+
+    try {
+        // Gunakan URLSearchParams agar parameter terformat dengan sempurna
+        const params = new URLSearchParams({
+            action: 'bacaSurat',
+            targetID: CONFIG.DB.SURAT
+        });
+
+        const response = await fetch(`${CONFIG.SCRIPT_URL}?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.status === "ERROR") {
+            tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-500">${data.message}</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        data.forEach(row => {
+            html += `
+                <tr class="border-b border-gray-50 hover:bg-gray-50">
                     <td class="px-8 py-5 text-gray-400 text-[10px]">${row.waktu}</td>
-                    <td class="px-6 py-5 uppercase font-bold text-gray-700">${row.jenis}</td>
+                    <td class="px-6 py-5 uppercase">${row.jenis}</td>
                     <td class="px-6 py-5 text-green-700 font-black">${row.nomor}</td>
                     <td class="px-6 py-5 text-gray-500">${row.tujuan}</td>
                     <td class="px-8 py-5 text-center">
-                        <div class="flex justify-center gap-2">
-                            <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fas fa-eye text-[10px]"></i></a>
-                            <button class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-600 hover:text-white transition-all"><i class="fab fa-whatsapp text-[10px]"></i></button>
-                        </div>
+                        <a href="${row.link}" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fas fa-eye"></i></a>
                     </td>
                 </tr>`;
-            });
-            tbody.innerHTML = html || '<tr><td colspan="5" class="text-center py-10">Belum ada arsip.</td></tr>';
-        } catch (e) { 
-            console.error("Gagal muat surat:", e);
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-red-500 uppercase font-black">Database Tidak Terbaca</td></tr>';
-        }
+        });
+        tbody.innerHTML = html || '<tr><td colspan="5" class="py-10 text-center">Data kosong.</td></tr>';
+
+    } catch (e) {
+        console.error("Fetch Error:", e);
+        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-red-500">Gagal terhubung ke Server Cloud.</td></tr>';
     }
+}
 
     // Upload & Simpan ke Cloud
     async function simpanSuratCloud() {
@@ -185,3 +199,4 @@
     // Jalankan pertama kali saat load
     muatDataSurat();
 </script>
+
