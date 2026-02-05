@@ -5,7 +5,7 @@
 
 const CONFIG = {
     // URL Google Apps Script (Web App URL)
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbywFZkPsNg0d53Lft2KVeYF89Z3yZSYsn9mtK0_qb_aBG8Bwn3MhRSa9YwVnjnQCaXbFg/exec',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwRSgBb1hV5u6lSeLYiFkstoFPZHpRqrwlln5bgunW3fQvllwFR8p1GbqnhqvMrzlNfYQ/exec',
     
     // ID Spreadsheet (Pastikan izin akses: Anyone with the link as Viewer/Editor)
     DB: {
