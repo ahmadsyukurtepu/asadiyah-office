@@ -1,77 +1,163 @@
 <div class="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100">
     <div class="flex justify-between items-center mb-8">
         <div>
-            <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">REGULASI</h2>
-            <p class="text-gray-400 font-medium">Pedoman & Aturan Organisasi</p>
+            <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">Manajemen Regulasi</h2>
+            <p class="text-gray-400 font-medium">Database Pedoman & SK Organisasi</p>
         </div>
-        <button onclick="tambahRegulasi()" class="bg-[#1b5e20] text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:scale-105 transition-all">
-            <i class="fas fa-plus mr-2"></i> Upload Baru
+        <button onclick="openModal()" class="bg-[#1b5e20] text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:scale-105 transition-all">
+            <i class="fas fa-plus mr-2"></i> Tambah Regulasi
         </button>
     </div>
 
-    <div id="regulasi-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b-2 border-gray-100">
+                    <th class="py-4 px-2 text-gray-500 font-bold uppercase text-xs">Nomor</th>
+                    <th class="py-4 px-2 text-gray-500 font-bold uppercase text-xs">Tanggal</th>
+                    <th class="py-4 px-2 text-gray-500 font-bold uppercase text-xs">Judul Regulasi</th>
+                    <th class="py-4 px-2 text-gray-500 font-bold uppercase text-xs text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="regulasi-table-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modalRegulasi" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
+    <div class="bg-white rounded-[32px] p-8 w-full max-w-md shadow-2xl scale-95 transition-transform">
+        <h3 class="text-2xl font-black text-gray-800 mb-6">INPUT REGULASI BARU</h3>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1">NOMOR REGULASI</label>
+                <input type="text" id="reg-nomor" placeholder="Contoh: 001/SK/A/2026" class="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1">TANGGAL</label>
+                <input type="date" id="reg-tanggal" class="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1">JUDUL/ISI REGULASI</label>
+                <input type="text" id="reg-judul" placeholder="Nama Dokumen" class="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1">LINK GOOGLE DRIVE</label>
+                <input type="text" id="reg-link" oninput="updatePreview()" placeholder="https://drive.google.com/..." class="w-full p-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+
+            <div id="preview-box" class="hidden p-4 bg-red-50 rounded-2xl border border-red-100 items-center gap-4">
+                <i class="fas fa-file-pdf text-red-500 text-2xl"></i>
+                <div class="overflow-hidden">
+                    <p id="prev-title" class="text-sm font-bold text-gray-800 truncate">Preview Judul</p>
+                    <p class="text-[10px] text-gray-400 uppercase">Dokumen Siap Diupload</p>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button onclick="closeModal()" class="flex-1 py-4 text-gray-400 font-bold hover:bg-gray-100 rounded-2xl transition-all">BATAL</button>
+                <button onclick="simpanRegulasi()" id="btn-save" class="flex-1 py-4 bg-green-600 text-white font-bold rounded-2xl shadow-lg hover:bg-green-700 transition-all">SIMPAN DATA</button>
+            </div>
         </div>
+    </div>
 </div>
 
 <script>
-    // Membaca Data
-    async function loadRegulasi() {
-        const container = document.getElementById('regulasi-content');
-        container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">Memuat data...</p>';
-        
-        try {
-            // Mengambil ID khusus REGULASI dari Config.js
-            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaRegulasi&targetID=${CONFIG.DB.REGULASI}`);
-            const data = await response.json();
+// --- LOGIKA UI ---
+function openModal() {
+    document.getElementById('modalRegulasi').classList.remove('hidden');
+    document.getElementById('modalRegulasi').classList.add('flex');
+}
 
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">Belum ada data regulasi.</p>';
-                return;
-            }
+function closeModal() {
+    document.getElementById('modalRegulasi').classList.add('hidden');
+    document.getElementById('modalRegulasi').classList.remove('flex');
+}
 
-            container.innerHTML = data.map(item => `
-                <div class="p-6 bg-gray-50 rounded-[32px] border border-gray-100 hover:border-green-200 transition-all group">
-                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm mb-4 group-hover:bg-red-500 group-hover:text-white transition-all">
-                        <i class="fas fa-file-pdf text-2xl"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 mb-1 uppercase text-sm">${item.judul}</h4>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-4">Update: ${item.tanggal}</p>
-                    <a href="${item.link}" target="_blank" class="block w-full text-center py-3 bg-white border border-gray-200 rounded-xl text-xs font-black text-gray-600 hover:bg-gray-800 hover:text-white transition-all">LIHAT DOKUMEN</a>
-                </div>
-            `).join('');
-        } catch (error) {
-            container.innerHTML = '<p class="col-span-full text-center text-red-500">Gagal mengambil data.</p>';
-        }
+function updatePreview() {
+    const judul = document.getElementById('reg-judul').value;
+    const link = document.getElementById('reg-link').value;
+    const box = document.getElementById('preview-box');
+    
+    if(judul && link.includes('drive.google.com')) {
+        box.classList.remove('hidden');
+        box.classList.add('flex');
+        document.getElementById('prev-title').innerText = judul;
+    } else {
+        box.classList.add('hidden');
     }
+}
 
-    // Menambah Data
-    async function tambahRegulasi() {
-        const judul = prompt("Nama Regulasi:");
-        const link = prompt("Link Google Drive Dokumen:");
-        if (!judul || !link) return;
+// --- LOGIKA DATA (SINKRON DENGAN CONFIG.JS) ---
 
-        const payload = {
-            action: "simpanRegulasi",
-            targetID: CONFIG.DB.REGULASI, // Mengarah ke spreadsheet Regulasi
-            judul: judul,
-            link: link,
-            tanggal: new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-        };
+async function loadRegulasi() {
+    const tableBody = document.getElementById('regulasi-table-body');
+    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-10 text-gray-400">Memproses Database...</td></tr>';
 
-        try {
-            const response = await fetch(CONFIG.SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            const res = await response.json();
-            if (res.status === "OK") {
-                alert("Berhasil!");
-                loadRegulasi();
-            }
-        } catch (error) {
-            alert("Gagal menyimpan data.");
-        }
+    try {
+        const res = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaRegulasi&targetID=${CONFIG.DB.REGULASI}`);
+        const data = await responseToJSON(res);
+
+        tableBody.innerHTML = '';
+        data.forEach((item, index) => {
+            tableBody.innerHTML += `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
+                    <td class="py-4 px-2 font-bold text-gray-700 text-sm">${item.nomor || '-'}</td>
+                    <td class="py-4 px-2 text-gray-500 text-sm">${item.tanggal}</td>
+                    <td class="py-4 px-2 font-medium text-gray-800 text-sm">${item.judul}</td>
+                    <td class="py-4 px-2">
+                        <div class="flex justify-center gap-2">
+                            <a href="${item.link}" target="_blank" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white" title="Lihat"><i class="fas fa-eye"></i></a>
+                            <button onclick="shareData('${item.judul}', '${item.link}')" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white" title="Kirim"><i class="fas fa-share-alt"></i></button>
+                            <button onclick="hapusData(${index})" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (e) {
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-10 text-red-500">Gagal memuat data. Periksa ID Spreadsheet.</td></tr>';
     }
+}
 
-    document.addEventListener('DOMContentLoaded', loadRegulasi);
+async function simpanRegulasi() {
+    const payload = {
+        action: "simpanRegulasi",
+        targetID: CONFIG.DB.REGULASI,
+        nomor: document.getElementById('reg-nomor').value,
+        tanggal: document.getElementById('reg-tanggal').value,
+        judul: document.getElementById('reg-judul').value,
+        link: document.getElementById('reg-link').value
+    };
+
+    if(!payload.nomor || !payload.judul || !payload.link) return alert("Mohon lengkapi data!");
+
+    const btn = document.getElementById('btn-save');
+    btn.innerText = "Proses...";
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const result = await res.json();
+        if(result.status === "OK") {
+            closeModal();
+            loadRegulasi();
+            alert("Regulasi Berhasil Diarsipkan!");
+        }
+    } catch (e) {
+        alert("Error Simpan");
+    } finally {
+        btn.innerText = "SIMPAN DATA";
+        btn.disabled = false;
+    }
+}
+
+function shareData(judul, link) {
+    const text = `*REGULASI AS'ADIYAH*\n\nDokumen: ${judul}\nLink: ${link}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+// Inisialisasi
+document.addEventListener('DOMContentLoaded', loadRegulasi);
 </script>
