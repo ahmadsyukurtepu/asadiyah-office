@@ -43,11 +43,12 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="klasifikasi" placeholder="04. Klasifikasi (Penting/Biasa)" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="klasifikasi" placeholder="04. Klasifikasi" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
                     <select id="sifatSurat" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
                         <option value="Biasa">05. Sifat: Biasa</option>
                         <option value="Rahasia">Rahasia</option>
                         <option value="Segera">Segera</option>
+                        <option value="Penting">Penting</option>
                     </select>
                 </div>
 
@@ -57,7 +58,7 @@
                 <textarea id="perihalSurat" placeholder="08. Perihal / Ringkasan" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600" rows="2"></textarea>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="lampiran" placeholder="09. Lampiran (Contoh: 1 Berkas)" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="lampiran" placeholder="09. Lampiran" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
                     <input type="text" id="kodeArsip" placeholder="10. Kode Arsip" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
                 </div>
 
@@ -81,8 +82,8 @@
                         <label class="text-[9px] font-black text-green-600 absolute -top-2 left-3 bg-white px-1">17. OFFICER</label>
                         <input type="text" id="officerName" readonly class="w-full bg-green-50 border-2 border-green-100 p-3 rounded-xl text-xs font-black text-green-700 outline-none">
                     </div>
-                    <div class="p-2 bg-red-50 rounded-xl border-2 border-dashed border-red-100">
-                        <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" class="block w-full text-[9px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-red-600 file:text-white file:font-bold cursor-pointer">
+                    <div class="p-1 bg-red-50 rounded-xl border-2 border-dashed border-red-100">
+                        <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" class="block w-full text-[9px] text-gray-500 file:mr-2 file:py-2 file:px-2 file:rounded-full file:border-0 file:bg-red-600 file:text-white file:font-bold cursor-pointer">
                     </div>
                 </div>
 
@@ -128,7 +129,7 @@
 </div>
 
 <script>
-    // Inisialisasi Nama Officer dari Login
+    // Ambil nama user dari localStorage (Jika ada)
     document.getElementById('officerName').value = localStorage.getItem('namaUser') || "Admin Kantor";
 
     function updateJenisDisplay(val) { 
@@ -182,20 +183,20 @@
         const fileInput = document.getElementById('fileSurat');
         const file = fileInput.files[0];
         
-        // Validasi Minimal
         if (!document.getElementById('jenisSurat').value || !document.getElementById('noSurat').value || !file) {
-            alert("Kategori, Nomor, dan File PDF Wajib Diisi!"); return;
+            alert("Mohon lengkapi Kategori, Nomor, dan Lampiran PDF!"); 
+            return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> PROSES 18 DATA...';
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MENGUPLOAD 18 DATA...';
 
         const reader = new FileReader();
         reader.onload = async function(e) {
             const payload = {
                 action: "simpanSurat",
                 targetID: CONFIG.DB.SURAT,
-                // MENGIRIM 18 INPUT KE APPS SCRIPT
+                // TOTAL 18 DATA POINT
                 jenis: document.getElementById('jenisSurat').value,
                 noSurat: document.getElementById('noSurat').value,
                 tglSurat: document.getElementById('tglSurat').value,
@@ -214,19 +215,25 @@
                 thnAkademik: document.getElementById('thnAkademik').value,
                 officer: document.getElementById('officerName').value,
                 fileData: e.target.result.split(',')[1],
-                fileName: `SURAT_${document.getElementById('noSurat').value.replace(/[/\\?%*:|"<>]/g, '-')}.pdf`
+                fileName: `ARSIP_${document.getElementById('jenisSurat').value.replace(/\s+/g, '_')}_${Date.now()}.pdf`
             };
 
             try {
-                const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const response = await fetch(CONFIG.SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
                 const res = await response.json();
                 if (res.status === "OK") {
-                    alert("Berhasil Mengarsip Dokumen!");
+                    alert("Berhasil! Dokumen telah diarsipkan ke Cloud.");
                     document.getElementById('formSurat').reset();
                     muatDataSurat();
-                } else { alert("Gagal: " + res.message); }
-            } catch (err) { alert("Kesalahan Cloud!"); } 
-            finally {
+                } else {
+                    alert("Gagal Simpan: " + res.message);
+                }
+            } catch (err) {
+                alert("Kesalahan Jaringan/Server!");
+            } finally {
                 btn.innerHTML = "Upload & Simpan Ke Cloud";
                 btn.disabled = false;
             }
@@ -234,6 +241,6 @@
         reader.readAsDataURL(file);
     }
 
+    // Jalankan muat data saat halaman dibuka
     muatDataSurat();
 </script>
-
