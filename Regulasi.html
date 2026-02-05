@@ -4,30 +4,32 @@
             <h2 class="text-3xl font-black text-gray-800 tracking-tight uppercase">REGULASI</h2>
             <p class="text-gray-400 font-medium">Pedoman & Aturan Organisasi</p>
         </div>
-        <button onclick="uploadRegulasiBaru()" class="bg-[#1b5e20] text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:scale-105 transition-all">
+        <button onclick="tambahRegulasi()" class="bg-[#1b5e20] text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:scale-105 transition-all">
             <i class="fas fa-plus mr-2"></i> Upload Baru
         </button>
     </div>
 
-    <div id="regulasi-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <p class="text-gray-400 animate-pulse">Menghubungkan ke server...</p>
-    </div>
+    <div id="regulasi-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>
 </div>
 
 <script>
-// Fungsi Ambil Data
-async function loadRegulasi() {
-    const container = document.getElementById('regulasi-list');
-    try {
-        // ID Spreadsheet diambil dari session/storage (asumsi Anda menyimpannya saat login)
-        const targetID = localStorage.getItem('targetID_Sheet'); 
-        const response = await fetch(`${CONFIG_URL}?action=bacaRegulasi&targetID=${targetID}`);
-        const data = await response.json();
-
-        container.innerHTML = ''; // Bersihkan loading
+    // Membaca Data
+    async function loadRegulasi() {
+        const container = document.getElementById('regulasi-content');
+        container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">Memuat data...</p>';
         
-        data.forEach(item => {
-            container.innerHTML += `
+        try {
+            // Mengambil ID khusus REGULASI dari Config.js
+            const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaRegulasi&targetID=${CONFIG.DB.REGULASI}`);
+            const data = await response.json();
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center py-10 text-gray-400">Belum ada data regulasi.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
                 <div class="p-6 bg-gray-50 rounded-[32px] border border-gray-100 hover:border-green-200 transition-all group">
                     <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm mb-4 group-hover:bg-red-500 group-hover:text-white transition-all">
                         <i class="fas fa-file-pdf text-2xl"></i>
@@ -36,44 +38,40 @@ async function loadRegulasi() {
                     <p class="text-[10px] text-gray-400 font-bold uppercase mb-4">Update: ${item.tanggal}</p>
                     <a href="${item.link}" target="_blank" class="block w-full text-center py-3 bg-white border border-gray-200 rounded-xl text-xs font-black text-gray-600 hover:bg-gray-800 hover:text-white transition-all">LIHAT DOKUMEN</a>
                 </div>
-            `;
-        });
-    } catch (err) {
-        container.innerHTML = '<p class="text-red-500 text-sm">Gagal memuat data regulasi.</p>';
-    }
-}
-
-// Fungsi Simpan Data (Sederhana via Prompt)
-async function uploadRegulasiBaru() {
-    const judul = prompt("Masukkan Nama Regulasi/Dokumen:");
-    const link = prompt("Masukkan URL Link Dokumen (Google Drive/Lainnya):");
-    const targetID = localStorage.getItem('targetID_Sheet');
-
-    if (!judul || !link) return;
-
-    const payload = {
-        action: "simpanRegulasi",
-        targetID: targetID,
-        judul: judul,
-        link: link,
-        tanggal: new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
-    };
-
-    try {
-        const res = await fetch(CONFIG_URL, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-        if (result.status === "OK") {
-            alert("Berhasil!");
-            loadRegulasi(); // Refresh list
+            `).join('');
+        } catch (error) {
+            container.innerHTML = '<p class="col-span-full text-center text-red-500">Gagal mengambil data.</p>';
         }
-    } catch (err) {
-        alert("Gagal menyimpan ke spreadsheet.");
     }
-}
 
-// Jalankan saat halaman dimuat
-loadRegulasi();
+    // Menambah Data
+    async function tambahRegulasi() {
+        const judul = prompt("Nama Regulasi:");
+        const link = prompt("Link Google Drive Dokumen:");
+        if (!judul || !link) return;
+
+        const payload = {
+            action: "simpanRegulasi",
+            targetID: CONFIG.DB.REGULASI, // Mengarah ke spreadsheet Regulasi
+            judul: judul,
+            link: link,
+            tanggal: new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+        };
+
+        try {
+            const response = await fetch(CONFIG.SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            const res = await response.json();
+            if (res.status === "OK") {
+                alert("Berhasil!");
+                loadRegulasi();
+            }
+        } catch (error) {
+            alert("Gagal menyimpan data.");
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRegulasi);
 </script>
