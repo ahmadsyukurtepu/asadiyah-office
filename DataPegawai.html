@@ -6,8 +6,9 @@
                 <p class="text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Status Keaktifan Personel As'adiyah</p>
             </div>
             
-            <button onclick="muatDataPegawai()" id="btnRefreshPegawai" class="flex items-center gap-3 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
-                <i class="fas fa-sync-alt" id="iconPegawai"></i> Sinkronkan Data
+            <button onclick="muatDataPegawai()" id="btnRefreshPegawai" class="group flex items-center gap-3 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 active:scale-95">
+                <i class="fas fa-sync-alt" id="iconPegawai"></i> 
+                <span>Sinkronkan Data</span>
             </button>
         </div>
     </div>
@@ -35,7 +36,7 @@
                         <td class="px-10 py-6 text-right uppercase tracking-[0.2em] text-[10px] font-black">Total Personel Keseluruhan</td>
                         <td id="totalPegawaiL" class="px-6 py-6 text-center text-blue-300 text-sm">0</td>
                         <td id="totalPegawaiP" class="px-6 py-6 text-center text-pink-300 text-sm">0</td>
-                        <td id="totalPegawaiSemua" class="px-10 py-6 text-center text-yellow-400 font-black text-base italic">0</td>
+                        <td id="totalPegawaiSemua" class="px-10 py-6 text-center text-yellow-400 font-black text-base italic border-l border-white/10">0</td>
                     </tr>
                 </tfoot>
             </table>
@@ -49,54 +50,80 @@
         const icon = document.getElementById('iconPegawai');
         const tbody = document.getElementById('tabelPegawaiBody');
         const tfoot = document.getElementById('tabelPegawaiFooter');
+        const btn = document.getElementById('btnRefreshPegawai');
 
+        // State: Loading
         overlay.classList.remove('hidden');
         icon.classList.add('fa-spin');
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
 
         try {
-            // Mengambil data dari Google Apps Script menggunakan ID Pegawai di Config
             const response = await fetch(`${CONFIG.SCRIPT_URL}?action=bacaPegawai&targetID=${CONFIG.DB.PEGAWAI}`);
+            
+            if (!response.ok) throw new Error('Network response was not ok');
+            
             const data = await response.json();
 
             let html = '';
             let tL = 0, tP = 0;
 
-            data.forEach(row => {
-                const subTotal = parseInt(row.l) + parseInt(row.p);
-                tL += parseInt(row.l);
-                tP += parseInt(row.p);
+            if (data && data.length > 0) {
+                data.forEach(row => {
+                    // Validasi angka untuk mencegah NaN jika data spreadsheet kosong/string
+                    const l = parseInt(row.l) || 0;
+                    const p = parseInt(row.p) || 0;
+                    const subTotal = l + p;
+                    
+                    tL += l;
+                    tP += p;
 
-                html += `
-                    <tr class="border-b border-gray-50 hover:bg-blue-50/20 transition-all cursor-default group">
-                        <td class="px-10 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-1.5 h-6 bg-blue-100 group-hover:bg-blue-500 transition-all rounded-full"></div>
-                                <span class="uppercase tracking-tight text-gray-700 font-black">${row.status}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-5 text-center text-blue-600 text-sm">${row.l}</td>
-                        <td class="px-6 py-5 text-center text-pink-600 text-sm">${row.p}</td>
-                        <td class="px-10 py-5 text-center bg-gray-50/50 font-black text-gray-800 text-sm">${subTotal}</td>
-                    </tr>
-                `;
-            });
+                    html += `
+                        <tr class="border-b border-gray-50 hover:bg-blue-50/20 transition-all cursor-default group">
+                            <td class="px-10 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-1.5 h-6 bg-blue-100 group-hover:bg-blue-500 transition-all rounded-full"></div>
+                                    <span class="uppercase tracking-tight text-gray-700 font-black">${row.status || 'TIDAK TERDEFINISI'}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-5 text-center text-blue-600 text-sm">${l.toLocaleString('id-ID')}</td>
+                            <td class="px-6 py-5 text-center text-pink-600 text-sm">${p.toLocaleString('id-ID')}</td>
+                            <td class="px-10 py-5 text-center bg-gray-50/30 font-black text-gray-800 text-sm group-hover:bg-blue-50/50">${subTotal.toLocaleString('id-ID')}</td>
+                        </tr>
+                    `;
+                });
 
-            tbody.innerHTML = html || '<tr><td colspan="4" class="py-20 text-center text-gray-300 uppercase font-black">Database Kosong</td></tr>';
-            
-            // Update Footer Gelap
-            document.getElementById('totalPegawaiL').innerText = tL;
-            document.getElementById('totalPegawaiP').innerText = tP;
-            document.getElementById('totalPegawaiSemua').innerText = (tL + tP);
-            tfoot.classList.remove('hidden');
+                tbody.innerHTML = html;
+                
+                // Update Footer
+                document.getElementById('totalPegawaiL').innerText = tL.toLocaleString('id-ID');
+                document.getElementById('totalPegawaiP').innerText = tP.toLocaleString('id-ID');
+                document.getElementById('totalPegawaiSemua').innerText = (tL + tP).toLocaleString('id-ID');
+                tfoot.classList.remove('hidden');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" class="py-20 text-center text-gray-300 uppercase font-black tracking-widest">Database Kosong</td></tr>';
+                tfoot.classList.add('hidden');
+            }
 
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="4" class="py-20 text-center text-red-400 uppercase font-black">Gagal memuat data pegawai</td></tr>';
+            console.error('Error:', e);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="py-20 text-center">
+                        <p class="text-red-400 uppercase font-black text-[10px] tracking-widest">Gagal memuat data pegawai</p>
+                        <p class="text-gray-400 text-[9px] mt-2">Periksa koneksi atau konfigurasi Database</p>
+                    </td>
+                </tr>`;
+            tfoot.classList.add('hidden');
         } finally {
+            // State: Selesai
             overlay.classList.add('hidden');
             icon.classList.remove('fa-spin');
+            btn.disabled = false;
+            btn.classList.remove('opacity-70', 'cursor-not-allowed');
         }
     }
 
-    // Jalankan sinkronisasi saat halaman dimuat
+    // Jalankan otomatis
     muatDataPegawai();
 </script>
