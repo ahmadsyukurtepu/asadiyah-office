@@ -98,26 +98,31 @@
 
     // Ambil Data Riwayat dari Spreadsheet
     async function muatDataSurat() {
-    // 1. Pastikan CONFIG.DB.SURAT berisi ID yang benar
-    const targetID = CONFIG.DB.SURAT;
+    const tbody = document.getElementById('riwayatSuratBody');
     
-    // 2. Gunakan URLSearchParams agar penyusunan URL tidak salah (menghindari error spasi/karakter)
-    const params = new URLSearchParams({
-        action: 'bacaSurat',
-        targetID: targetID
-    });
+    // Gunakan URLSearchParams agar penyusunan link otomatis benar
+    const queryString = new URLSearchParams({
+        action: "bacaSurat",
+        targetID: CONFIG.DB.SURAT // Ini akan mengambil ID yang tadi muncul di console
+    }).toString();
 
     try {
-        // 3. Gabungkan SCRIPT_URL dengan params
-        const response = await fetch(`${CONFIG.SCRIPT_URL}?${params.toString()}`);
+        const response = await fetch(`${CONFIG.SCRIPT_URL}?${queryString}`);
         const data = await response.json();
         
-        // ... proses data ke tabel ...
-    } catch (err) {
-        console.error("Gagal memuat data:", err);
+        // Cek jika server mengirim error
+        if (data.status === "ERROR") {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-500">${data.message}</td></tr>`;
+            return;
+        }
+
+        // Tampilkan data ke tabel...
+        // (Gunakan kode tabel yang sudah kita bahas sebelumnya)
+        
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Gagal memuat data. Periksa koneksi internet.</td></tr>`;
     }
 }
-
     // Upload & Simpan ke Cloud
     async function simpanSuratCloud() {
         const btn = document.getElementById('btnSimpanSurat');
@@ -177,5 +182,6 @@
     // Jalankan pertama kali saat load
     muatDataSurat();
 </script>
+
 
 
