@@ -2,73 +2,113 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
             <div id="suratHeader" class="bg-[#1b5e20] text-white py-4 font-bold text-center uppercase text-[11px] tracking-widest">
-                INPUT <span id="displayJenis">PILIH JENIS SURAT</span>
+                ARSIP DIGITAL: <span id="displayJenis">PILIH JENIS SURAT</span>
             </div>
             
-            <form id="formSurat" class="p-8 space-y-5">
+            <form id="formSurat" class="p-8 space-y-4">
                 <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Kategori Surat</label>
-                    <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600 transition-all">
-                        <option value="" disabled selected>-- PILIH JENIS SURAT --</option>
+                    <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">01. Kategori Surat</label>
+                    <select id="jenisSurat" onchange="updateJenisDisplay(this.value)" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600 transition-all">
+                        <option value="" disabled selected>-- PILIH JENIS --</option>
                         <option value="Undangan">Undangan</option>
                         <option value="Surat Tugas">Surat Tugas</option>
                         <option value="Surat Edaran">Surat Edaran</option>
                         <option value="Surat Keputusan">Surat Keputusan</option>
-                        <option value="Surat Himbauan/Penyampaian">Surat Himbauan/Penyampaian</option>
                         <option value="Surat Izin">Surat Izin</option>
                         <option value="Surat Masuk">Surat Masuk</option>
                     </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="noSurat" placeholder="No. Surat" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
-                    <input type="date" id="tglSurat" class="bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">02. No Surat</label>
+                        <input type="text" id="noSurat" placeholder="No. Surat" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">03. Tgl Surat</label>
+                        <input type="date" id="tglSurat" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    </div>
                 </div>
 
-                <input type="text" id="tujuanSurat" placeholder="Penerima/Tujuan" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600">
-                <textarea id="perihalSurat" placeholder="Perihal" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl text-xs font-bold outline-none focus:border-green-600" rows="3"></textarea>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="klasifikasi" placeholder="04. Klasifikasi (Penting/Biasa)" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <select id="sifatSurat" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                        <option value="Biasa">05. Sifat: Biasa</option>
+                        <option value="Rahasia">Rahasia</option>
+                        <option value="Segera">Segera</option>
+                    </select>
+                </div>
 
-                <div class="p-4 bg-green-50 rounded-2xl border-2 border-dashed border-green-200">
-                    <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" 
-                        class="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-green-700 file:text-white file:font-bold cursor-pointer">
+                <input type="text" id="asalSurat" placeholder="06. Asal Instansi Pengirim" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                <input type="text" id="tujuanSurat" placeholder="07. Tujuan / Penerima" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+
+                <textarea id="perihalSurat" placeholder="08. Perihal / Ringkasan" class="w-full bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600" rows="2"></textarea>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="lampiran" placeholder="09. Lampiran (Contoh: 1 Berkas)" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="kodeArsip" placeholder="10. Kode Arsip" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="lokasiFisik" placeholder="11. Lokasi Rak/Lemari" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="ttdNama" placeholder="12. Nama Penandatangan" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="ttdJabatan" placeholder="13. Jabatan TTD" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="disposisi" placeholder="14. Status Disposisi" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="tembusan" placeholder="15. Tembusan" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                    <input type="text" id="thnAkademik" placeholder="16. Tahun Akademik" class="bg-gray-50 border-2 border-gray-100 p-3 rounded-xl text-xs font-bold outline-none focus:border-green-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="relative">
+                        <label class="text-[9px] font-black text-green-600 absolute -top-2 left-3 bg-white px-1">17. OFFICER</label>
+                        <input type="text" id="officerName" readonly class="w-full bg-green-50 border-2 border-green-100 p-3 rounded-xl text-xs font-black text-green-700 outline-none">
+                    </div>
+                    <div class="p-2 bg-red-50 rounded-xl border-2 border-dashed border-red-100">
+                        <input type="file" id="fileSurat" accept="application/pdf" onchange="previewPDF(this)" class="block w-full text-[9px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-red-600 file:text-white file:font-bold cursor-pointer">
+                    </div>
                 </div>
 
                 <button type="button" onclick="simpanSuratCloud()" id="btnSimpanSurat" class="w-full bg-[#fbbf24] hover:bg-yellow-500 text-[#0d3b11] font-black py-4 rounded-2xl uppercase text-sm shadow-lg transition-all active:scale-95">
-                    Upload & Simpan
+                    Upload & Simpan Ke Cloud
                 </button>
             </form>
         </div>
 
-        <div class="h-[600px] lg:h-auto min-h-[400px]">
+        <div class="h-[600px] lg:h-auto min-h-[500px]">
             <iframe id="pdfFrame" class="hidden w-full h-full rounded-[2.5rem] border-2 border-gray-100 bg-white shadow-sm"></iframe>
             <div id="pdfPlaceholder" class="w-full h-full bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-gray-300">
                 <i class="fas fa-file-pdf text-6xl mb-4"></i>
-                <p class="text-[11px] font-black uppercase tracking-[0.2em]">Pratinjau Dokumen</p>
+                <p class="text-[11px] font-black uppercase tracking-[0.2em]">Pratinjau Dokumen 18 Input</p>
             </div>
         </div>
     </div>
 
     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-8 border-b border-gray-50 flex justify-between items-center">
-            <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Riwayat Pengarsipan</h3>
+            <h3 class="text-sm font-black uppercase tracking-widest text-gray-800">Riwayat Pengarsipan Pusat</h3>
             <button onclick="muatDataSurat()" class="text-green-700 hover:rotate-180 transition-all duration-500">
                 <i class="fas fa-sync-alt"></i>
             </button>
         </div>
-
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
                     <tr class="text-[10px] uppercase font-black text-gray-400 tracking-widest border-b border-gray-50">
                         <th class="px-8 py-5">Waktu</th>
                         <th class="px-6 py-5">Jenis</th>
-                        <th class="px-6 py-5">Nomor</th>
+                        <th class="px-6 py-5">Nomor Surat</th>
                         <th class="px-6 py-5">Tujuan</th>
-                        <th class="px-8 py-5 text-center">Aksi</th>
+                        <th class="px-8 py-5 text-center">Arsip</th>
                     </tr>
                 </thead>
                 <tbody id="riwayatSuratBody" class="text-[11px] font-bold text-gray-600">
-                    <tr><td colspan="5" class="py-10 text-center text-gray-300 animate-pulse">Memuat database...</td></tr>
+                    <tr><td colspan="5" class="py-10 text-center text-gray-300 animate-pulse">Menghubungkan ke Server...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -76,45 +116,30 @@
 </div>
 
 <script>
-    // 1. Update Label Header
+    // Inisialisasi Nama Officer dari Login
+    document.getElementById('officerName').value = localStorage.getItem('namaUser') || "Admin Kantor";
+
     function updateJenisDisplay(val) { 
         document.getElementById('displayJenis').innerText = val.toUpperCase(); 
     }
 
-    // 2. Preview PDF
     function previewPDF(input) {
         const frame = document.getElementById('pdfFrame');
         const placeholder = document.getElementById('pdfPlaceholder');
-        
         if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const blobURL = URL.createObjectURL(file);
-            
+            const blobURL = URL.createObjectURL(input.files[0]);
             frame.src = blobURL;
             frame.classList.remove('hidden');
             placeholder.classList.add('hidden');
         }
     }
 
-    // 3. Muat Data Riwayat (GET)
     async function muatDataSurat() {
         const tbody = document.getElementById('riwayatSuratBody');
-        if (!tbody) return;
-
-        const params = new URLSearchParams({
-            action: "bacaSurat",
-            targetID: CONFIG.DB.SURAT
-        }).toString();
-
+        const params = new URLSearchParams({ action: "bacaSurat", targetID: CONFIG.DB.SURAT }).toString();
         try {
             const response = await fetch(`${CONFIG.SCRIPT_URL}?${params}`);
             const data = await response.json();
-            
-            if (data.status === "ERROR") {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-500 font-bold">${data.message}</td></tr>`;
-                return;
-            }
-
             let html = '';
             if (data.length > 0) {
                 data.forEach(row => {
@@ -125,83 +150,77 @@
                             <td class="px-6 py-5 text-green-700 font-black">${row.nomor}</td>
                             <td class="px-6 py-5 text-gray-500">${row.tujuan}</td>
                             <td class="px-8 py-5 text-center">
-                                <div class="flex justify-center">
-                                    <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                                        <i class="fas fa-eye text-[10px]"></i>
-                                    </a>
-                                </div>
+                                <a href="${row.link}" target="_blank" class="inline-flex w-8 h-8 rounded-full bg-blue-50 text-blue-600 items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
+                                    <i class="fas fa-eye text-[10px]"></i>
+                                </a>
                             </td>
                         </tr>`;
                 });
             } else {
-                html = '<tr><td colspan="5" class="py-10 text-center text-gray-300 uppercase tracking-widest">Belum ada data surat</td></tr>';
+                html = '<tr><td colspan="5" class="py-10 text-center text-gray-300">Belum ada data</td></tr>';
             }
             tbody.innerHTML = html;
-            
         } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-400">Gagal terhubung ke Cloud Database</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-400">Gagal Memuat Data</td></tr>`;
         }
     }
 
-    // 4. Simpan Data (POST)
     async function simpanSuratCloud() {
         const btn = document.getElementById('btnSimpanSurat');
         const fileInput = document.getElementById('fileSurat');
         const file = fileInput.files[0];
-        const noSurat = document.getElementById('noSurat').value;
-        const jenisSurat = document.getElementById('jenisSurat').value;
-
-        // Validasi Sederhana
-        if (!jenisSurat || !noSurat || !file) { 
-            alert("Mohon isi Kategori, Nomor Surat, dan Lampirkan PDF!"); 
-            return; 
+        
+        // Validasi Minimal
+        if (!document.getElementById('jenisSurat').value || !document.getElementById('noSurat').value || !file) {
+            alert("Kategori, Nomor, dan File PDF Wajib Diisi!"); return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MENGUPLOAD...';
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> PROSES 18 DATA...';
 
         const reader = new FileReader();
         reader.onload = async function(e) {
             const payload = {
                 action: "simpanSurat",
                 targetID: CONFIG.DB.SURAT,
-                jenis: jenisSurat,
-                noSurat: noSurat,
+                // MENGIRIM 18 INPUT KE APPS SCRIPT
+                jenis: document.getElementById('jenisSurat').value,
+                noSurat: document.getElementById('noSurat').value,
                 tglSurat: document.getElementById('tglSurat').value,
+                klasifikasi: document.getElementById('klasifikasi').value,
+                sifat: document.getElementById('sifatSurat').value,
+                asal: document.getElementById('asalSurat').value,
                 tujuan: document.getElementById('tujuanSurat').value,
                 perihal: document.getElementById('perihalSurat').value,
-                officer: localStorage.getItem('namaUser') || "Admin Kantor",
+                lampiran: document.getElementById('lampiran').value,
+                kodeArsip: document.getElementById('kodeArsip').value,
+                lokasi: document.getElementById('lokasiFisik').value,
+                ttdNama: document.getElementById('ttdNama').value,
+                ttdJabatan: document.getElementById('ttdJabatan').value,
+                disposisi: document.getElementById('disposisi').value,
+                tembusan: document.getElementById('tembusan').value,
+                thnAkademik: document.getElementById('thnAkademik').value,
+                officer: document.getElementById('officerName').value,
                 fileData: e.target.result.split(',')[1],
-                fileName: `SURAT_${noSurat.replace(/[/\\?%*:|"<>]/g, '-')}.pdf`
+                fileName: `SURAT_${document.getElementById('noSurat').value.replace(/[/\\?%*:|"<>]/g, '-')}.pdf`
             };
 
             try {
-                const response = await fetch(CONFIG.SCRIPT_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(payload) 
-                });
+                const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const res = await response.json();
-                
                 if (res.status === "OK") {
-                    alert("Berhasil! " + res.message);
+                    alert("Berhasil Mengarsip Dokumen!");
                     document.getElementById('formSurat').reset();
-                    document.getElementById('pdfFrame').classList.add('hidden');
-                    document.getElementById('pdfPlaceholder').classList.remove('hidden');
-                    document.getElementById('displayJenis').innerText = "PILIH JENIS SURAT";
-                    muatDataSurat(); // Refresh Tabel
-                } else {
-                    alert("Gagal Simpan: " + res.message);
-                }
-            } catch (err) {
-                alert("Kesalahan Sistem: Gagal mengirim data ke Cloud.");
-            } finally {
-                btn.innerHTML = "Upload & Simpan";
+                    muatDataSurat();
+                } else { alert("Gagal: " + res.message); }
+            } catch (err) { alert("Kesalahan Cloud!"); } 
+            finally {
+                btn.innerHTML = "Upload & Simpan Ke Cloud";
                 btn.disabled = false;
             }
         };
         reader.readAsDataURL(file);
     }
 
-    // Inisialisasi Pertama
     muatDataSurat();
 </script>
