@@ -128,41 +128,111 @@
         } catch (e) { console.error("Error muat data"); }
     }
 
-    async function simpanSuratCloud() {
-        const btn = document.getElementById('btnSimpanSurat');
-        const file = document.getElementById('fileSurat').files[0];
-        if (!file) { alert("Pilih file PDF!"); return; }
+    // 1. Fungsi Pratinjau PDF (Muncul seketika saat pilih file)
+function previewPDF(input) {
+    const frame = document.getElementById('pdfFrame');
+    const placeholder = document.getElementById('pdfPlaceholder');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const blobURL = URL.createObjectURL(file); // Membuat link sementara untuk pratinjau
+        
+        frame.src = blobURL;
+        frame.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+    }
+}
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> MENGUPLOAD...';
+// 2. Fungsi Ambil Data (Riwayat) dari Spreadsheet
+async function muatDataSurat() {
+    const tbody = document.getElementById('riwayatSuratBody');
+    tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center animate-pulse">Menghubungkan ke Cloud...</td></tr>';
+    
+    try {
+        const url = `${CONFIG.SCRIPT_URL}?action=bacaSurat&targetID=${CONFIG.DB.SURAT}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        let html = '';
+        data.forEach(row => {
+            html += `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition-all">
+                    <td class="px-8 py-5 text-gray-400 text-[10px]">${row.waktu}</td>
+                    <td class="px-6 py-5 uppercase">${row.jenis}</td>
+                    <td class="px-6 py-5 text-green-700 font-black">${row.nomor}</td>
+                    <td class="px-6 py-5 text-gray-500">${row.tujuan}</td>
+                    <td class="px-8 py-5 text-center">
+                        <div class="flex justify-center gap-2">
+                            <a href="${row.link}" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fas fa-eye text-[10px]"></i></a>
+                            <button onclick="hapusSurat('${row.nomor}')" class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all"><i class="fas fa-trash text-[10px]"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+        });
+        tbody.innerHTML = html || '<tr><td colspan="5" class="py-10 text-center">Belum ada arsip surat.</td></tr>';
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-red-500">Gagal memuat data. Periksa SCRIPT_URL atau Izin Spreadsheet.</td></tr>';
+    }
+}
 
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            const payload = {
-                action: "simpanSurat",
-                targetID: CONFIG.DB.SURAT,
-                noSurat: document.getElementById('noSurat').value,
-                jenis: document.getElementById('jenisSurat').value,
-                tgl: document.getElementById('tglSurat').value,
-                tujuan: document.getElementById('tujuanSurat').value,
-                perihal: document.getElementById('perihalSurat').value,
-                base64: e.target.result.split(',')[1],
-                fileName: file.name
-            };
+// 3. Fungsi Upload & Simpan
+async function simpanSuratCloud() {
+    const btn = document.getElementById('btnSimpanSurat');
+    const fileInput = document.getElementById('fileSurat');
+    const file = fileInput.files[0];
 
-            try {
-                const response = await fetch(CONFIG.SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-                const res = await response.json();
-                alert(res.message);
-                muatDataSurat();
-            } catch (err) { alert("Gagal koneksi server"); }
-            finally {
-                btn.innerHTML = "Upload & Simpan";
-                btn.disabled = false;
-            }
-        };
-        reader.readAsDataURL(file);
+    // Validasi Input
+    if (!file || !document.getElementById('noSurat').value || !document.getElementById('jenisSurat').value) {
+        alert("Mohon lengkapi Data Surat dan pilih File PDF!");
+        return;
     }
 
-    muatDataSurat();
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> SEDANG MENGUPLOAD...';
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        
+        const payload = {
+            action: "simpanSurat",
+            targetID: CONFIG.DB.SURAT,
+            noSurat: document.getElementById('noSurat').value,
+            jenis: document.getElementById('jenisSurat').value,
+            tgl: document.getElementById('tglSurat').value,
+            tujuan: document.getElementById('tujuanSurat').value,
+            perihal: document.getElementById('perihalSurat').value,
+            fileData: base64Data,
+            fileName: `SURAT_${document.getElementById('noSurat').value}_${file.name}`
+        };
+
+        try {
+            const response = await fetch(CONFIG.SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            const res = await response.json();
+            
+            if (res.status === "OK") {
+                alert("✅ Sukses: " + res.message);
+                document.getElementById('formSurat').reset();
+                document.getElementById('pdfFrame').classList.add('hidden');
+                document.getElementById('pdfPlaceholder').classList.remove('hidden');
+                muatDataSurat(); // Refresh tabel otomatis
+            } else {
+                alert("❌ Gagal: " + res.message);
+            }
+        } catch (err) {
+            alert("❌ Terjadi kesalahan koneksi ke server.");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = "Upload & Simpan";
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// Jalankan saat halaman dibuka
+muatDataSurat();
 </script>
+
