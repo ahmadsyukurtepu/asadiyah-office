@@ -1,30 +1,38 @@
 <div class="animate-fade-in space-y-6">
-    <div class="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <h2 class="text-2xl font-black text-gray-800 tracking-tight uppercase">Data Statistik Santri</h2>
-                <p class="text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Laporan Real-time As'adiyah</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-3">
-                <select id="sortKategori" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600 transition-all cursor-pointer">
-                    <option value="PUSAT">🏢 PUSAT</option>
-                    <option value="CABANG">🌿 CABANG</option>
-                </select>
+    <div class="bg-white rounded-[30px] md:rounded-[40px] p-6 md:p-8 shadow-sm border border-gray-100">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div class="space-y-1">
+            <h2 class="text-xl md:text-2xl font-black text-gray-800 tracking-tight uppercase">Data Statistik Santri</h2>
+            <p class="text-gray-400 font-bold text-[9px] md:text-[10px] uppercase tracking-[0.2em]">Laporan Real-time As'adiyah</p>
+        </div>
+        
+        <div class="grid grid-cols-12 gap-2 w-full lg:w-auto">
+            <div class="col-span-6 md:col-span-5 lg:w-32">
+                <select id="sortKategori" onchange="muatDataSantri()" 
+                    class="w-full bg-gray-50 border-2 border-gray-100 px-3 py-3 rounded-2xl text-[10px] font-black outline-none focus:border-green-600 focus:bg-white transition-all cursor-pointer appearance-none">
+                    <option value="PUSAT">🏢 PUSAT</option>
+                    <option value="CABANG">🌿 CABANG</option>
+                </select>
+            </div>
 
-                <select id="sortTahun" onchange="muatDataSantri()" class="bg-gray-50 border-2 border-gray-100 px-4 py-3 rounded-2xl text-[11px] font-black outline-none focus:border-green-600 transition-all cursor-pointer">
-                    <option value="all">SEMUA TAHUN</option>
-                    <option value="2026/2027">2026/2027</option>
-                    <option value="2025/2026">2025/2026</option>
-                </select>
+            <div class="col-span-4 md:col-span-5 lg:w-40">
+                <select id="sortTahun" onchange="muatDataSantri()" 
+                    class="w-full bg-gray-50 border-2 border-gray-100 px-3 py-3 rounded-2xl text-[10px] font-black outline-none focus:border-green-600 focus:bg-white transition-all cursor-pointer appearance-none">
+                    <option value="all">SEMUA TAHUN</option>
+                    <option value="2026/2027">2026/2027</option>
+                    <option value="2025/2026">2025/2026</option>
+                </select>
+            </div>
 
-                <button onclick="muatDataSantri()" id="btnRefresh" class="bg-green-800 text-white p-4 rounded-2xl hover:bg-green-700 active:scale-95 transition-all shadow-lg shadow-green-900/20">
-                    <i class="fas fa-sync-alt" id="iconRefresh"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
+            <div class="col-span-2 lg:w-14">
+                <button onclick="muatDataSantri()" id="btnRefresh" 
+                    class="w-full flex items-center justify-center bg-green-800 text-white py-3 rounded-2xl hover:bg-green-700 active:scale-95 transition-all shadow-lg shadow-green-900/10">
+                    <i class="fas fa-sync-alt text-xs" id="iconRefresh"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     <div class="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden relative min-h-[300px]">
         <div id="loadingOverlay" class="hidden absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex items-center justify-center flex-col">
             <div class="relative">
@@ -142,3 +150,4 @@
     // Gunakan DOMContentLoaded agar script berjalan setelah HTML siap
     document.addEventListener('DOMContentLoaded', muatDataSantri);
 </script>
+
